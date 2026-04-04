@@ -97,6 +97,10 @@ function Register() {
     }
   };
 
+  const handleGoogleAuth = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+
   return (
     <AuthLayout>
       <div className="auth-card">
@@ -175,6 +179,17 @@ function Register() {
           style={{ opacity: loading ? 0.7 : 1 }}
         >
           {loading ? "Creating..." : "Register"}
+        </button>
+
+        <div className="divider">
+          <span></span>
+          <div>or</div>
+          <span></span>
+        </div>
+
+        <button className="google-btn" type="button" onClick={handleGoogleAuth}>
+          <span style={{ fontSize: 16 }}>G</span>
+          Continue with Google
         </button>
       </div>
     </AuthLayout>

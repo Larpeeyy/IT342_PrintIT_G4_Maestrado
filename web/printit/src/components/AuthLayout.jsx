@@ -1,37 +1,37 @@
-import "../pages/Auth.css";
+function AuthLayout({ children }) {
 
-function AuthLayout({children}){
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
 
-return(
+      <div
+        style={{
+          flex: 1,
+          background: "#8C2F39",
+          color: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column"
+        }}
+      >
+        <h1>PrintIT</h1>
+        <p>Print smarter. Order faster.</p>
+      </div>
 
-<div className="auth-container">
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#F4F4F4"
+        }}
+      >
+        {children}
+      </div>
 
-<div className="auth-left">
-
-<div className="brand">
-
-<h1>PrintIT</h1>
-
-<h3>Print smarter. Order faster.</h3>
-
-<p>
-Upload files, order prints, and pick them up anytime on campus.
-</p>
-
-</div>
-
-</div>
-
-<div className="auth-right">
-
-{children}
-
-</div>
-
-</div>
-
-);
-
+    </div>
+  );
 }
 
 export default AuthLayout;

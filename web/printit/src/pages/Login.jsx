@@ -30,26 +30,28 @@ function Login() {
 
     try {
       setLoading(true);
+
       const res = await loginUser({
         email: login.email.trim(),
         password: login.password,
       });
 
-      // Your current backend returns:
-      // - user object when success
-      // - null when invalid
       if (!res.data) {
         alert("Invalid credentials.");
         return;
       }
 
-      // Save current user for now (temporary; later replace with JWT storage)
       localStorage.setItem("printit_user", JSON.stringify(res.data));
 
       alert("Login successful!");
 
-      // temporary route (you can change later)
-      navigate("/student/home");
+      if (res.data.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (res.data.role === "STAFF") {
+        navigate("/staff/dashboard");
+      } else {
+        navigate("/student/home");
+      }
     } catch (e) {
       const msg =
         e?.response?.data?.message ||
@@ -60,6 +62,10 @@ function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleAuth = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
   return (
@@ -123,7 +129,7 @@ function Login() {
           <span></span>
         </div>
 
-        <button className="google-btn" type="button">
+        <button className="google-btn" type="button" onClick={handleGoogleAuth}>
           <span style={{ fontSize: 16 }}>G</span>
           Continue with Google
         </button>

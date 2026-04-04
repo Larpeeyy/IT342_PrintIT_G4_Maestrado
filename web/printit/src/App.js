@@ -1,23 +1,18 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
-function StudentHome() {
-  return <div style={{ padding: 24 }}>Student Home (temporary)</div>;
-}
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        <Route path="/student/home" element={<StudentHome />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
