@@ -2,40 +2,27 @@ package com.printit.backend.controller;
 
 import com.printit.backend.dto.AuthRequest;
 import com.printit.backend.entity.User;
-import com.printit.backend.repository.UserRepository;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.printit.backend.service.AuthService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
-    public AuthController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @PostMapping("/register")
+    public User register(@RequestBody AuthRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/login")
     public User login(@RequestBody AuthRequest request) {
-
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-
-        User user = userOpt.get();
-
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        return user;
+        return authService.login(request.getEmail(), request.getPassword());
     }
 }

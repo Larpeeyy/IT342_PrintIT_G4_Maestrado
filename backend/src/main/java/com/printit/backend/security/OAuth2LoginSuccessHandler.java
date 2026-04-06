@@ -1,6 +1,7 @@
 package com.printit.backend.security;
 
 import com.printit.backend.entity.User;
+import com.printit.backend.patterns.GoogleUserAdapter;
 import com.printit.backend.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,13 +34,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
-        String email = oauthUser.getAttribute("email");
-        String name = oauthUser.getAttribute("name");
+        User adaptedUser = GoogleUserAdapter.convert(oauthUser);
 
-        System.out.println("Google email: " + email);
-        System.out.println("Google name: " + name);
+        System.out.println("Google email: " + adaptedUser.getEmail());
+        System.out.println("Google name: " + adaptedUser.getFullName());
 
-        User user = authService.loginWithGoogle(email, name);
+        User user = authService.loginWithGoogle(
+                adaptedUser.getEmail(),
+                adaptedUser.getFullName()
+        );
 
         String redirectUrl = "http://localhost:3000/oauth-success"
                 + "?email=" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8)

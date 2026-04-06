@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { loginUser } from "../services/api";
@@ -14,6 +14,33 @@ function Login() {
     email: "",
     password: "",
   });
+
+  const redirectByRole = useCallback(
+    (role) => {
+      if (role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (role === "STAFF") {
+        navigate("/staff/dashboard");
+      } else {
+        navigate("/student/home");
+      }
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("printit_user");
+
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        redirectByRole(parsedUser.role);
+      } catch (error) {
+        console.error("Failed to parse saved user:", error);
+        localStorage.removeItem("printit_user");
+      }
+    }
+  }, [redirectByRole]);
 
   const handleChange = (e) => {
     setLogin((prev) => ({
@@ -44,14 +71,7 @@ function Login() {
       localStorage.setItem("printit_user", JSON.stringify(res.data));
 
       alert("Login successful!");
-
-      if (res.data.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else if (res.data.role === "STAFF") {
-        navigate("/staff/dashboard");
-      } else {
-        navigate("/student/home");
-      }
+      redirectByRole(res.data.role);
     } catch (e) {
       const msg =
         e?.response?.data?.message ||
@@ -95,7 +115,7 @@ function Login() {
           <button
             type="button"
             className="eye-btn"
-            onClick={() => setShowPassword((v) => !v)}
+            onClick={() => setShowPassword((prev) => !prev)}
             aria-label="Toggle password"
           >
             👁
