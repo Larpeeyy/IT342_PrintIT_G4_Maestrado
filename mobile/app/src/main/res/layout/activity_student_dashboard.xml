@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F3F3F3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:background="#FFFFFF"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="🖨"
+                    android:textSize="20sp"
+                    android:background="@android:color/transparent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PrintIT"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="#111827"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tvProfileBadge"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="ST"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="#8F2F39" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="24dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvWelcomeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Dashboard"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#111827"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:id="@+id/tvWelcomeMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome to PrintIT. This page is currently for testing role-based login and navigation."
+                    android:textSize="15sp"
+                    android:textColor="#667085" />
+            </LinearLayout>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:useDefaultMargins="true">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Orders"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111827"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No data yet."
+                        android:textSize="14sp"
+                        android:textColor="#6B7280" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recent Requests"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111827"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No data yet."
+                        android:textSize="14sp"
+                        android:textColor="#6B7280" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Payment Status"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111827"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No data yet."
+                        android:textSize="14sp"
+                        android:textColor="#6B7280" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111827"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No data yet."
+                        android:textSize="14sp"
+                        android:textColor="#6B7280" />
+                </LinearLayout>
+
+            </GridLayout>
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Logout"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#8F2F39"
+                android:layout_marginTop="20dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
