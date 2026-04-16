@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { loginUser } from "../services/api";
-import "./Auth.css";
+import "../components/Auth.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -88,73 +88,107 @@ function Login() {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
+
   return (
-    <AuthLayout>
-      <div className="auth-card">
-        <div className="tabs">
-          <span className="active">Login</span>
-          <Link to="/register">Register</Link>
+    <AuthLayout
+      bottomMode="register"
+      bottomText="New to PrintIT?"
+      bottomLinkText="Create an account"
+      bottomLinkTo="/register"
+    >
+      <div className="auth-form-shell">
+        <p className="auth-shell-kicker">UNIVERSITY PRINT SERVICES</p>
+        <h1 className="auth-shell-title">Welcome back</h1>
+        <p className="auth-shell-subtitle">
+          Sign in to manage your print jobs and orders.
+        </p>
+
+        <div className="auth-top-switch">
+          <span className="auth-top-switch-item active">Sign In</span>
+          <Link to="/register" className="auth-top-switch-item">
+            Register
+          </Link>
         </div>
 
-        <label>Email Address</label>
-        <input
-          type="email"
-          name="email"
-          value={login.email}
-          onChange={handleChange}
-        />
+        <div className="auth-panel">
+          <div className="auth-field-group">
+            <label>University Email</label>
+            <div className="input-icon-wrap">
+              <span className="input-icon">✉</span>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@university.edu"
+                value={login.email}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-        <label>Password</label>
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={login.password}
-            onChange={handleChange}
-          />
+          <div className="auth-field-group">
+            <div className="label-row">
+              <label>Password</label>
+              <span className="auth-link-text">Forgot password?</span>
+            </div>
+
+            <div className="input-icon-wrap password-field modern">
+              <span className="input-icon">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={login.password}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="eye-btn"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label="Toggle password"
+              >
+                {showPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+          </div>
+
+          <div className="auth-row modern-row">
+            <label className="remember modern-remember">
+              <input type="checkbox" />
+              Keep me signed in for 30 days
+            </label>
+          </div>
+
           <button
+            className="primary-btn modern-primary"
             type="button"
-            className="eye-btn"
-            onClick={() => setShowPassword((prev) => !prev)}
-            aria-label="Toggle password"
+            onClick={handleLogin}
+            disabled={loading}
+            style={{ opacity: loading ? 0.8 : 1 }}
           >
-            👁
+            {loading ? "Signing in..." : "Sign In to PrintIT"}
           </button>
+
+          <div className="divider modern-divider">
+            <span></span>
+            <div>OR</div>
+            <span></span>
+          </div>
+
+          <button
+            className="google-btn modern-google-btn"
+            type="button"
+            onClick={handleGoogleAuth}
+          >
+            <span className="google-mark google-colored">G</span>
+            Continue with Google
+          </button>
+
         </div>
 
-        <div className="auth-row">
-          <label className="remember">
-            <input type="checkbox" />
-            Remember me
-          </label>
-
-          <span style={{ color: "#8C2F39", cursor: "pointer", fontWeight: 500 }}>
-            Forgot Password?
-          </span>
-        </div>
-
-        <button
-          className="primary-btn"
-          type="button"
-          onClick={handleLogin}
-          disabled={loading}
-          style={{ opacity: loading ? 0.7 : 1 }}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        <div className="divider">
-          <span></span>
-          <div>or</div>
-          <span></span>
-        </div>
-
-        <button className="google-btn" type="button" onClick={handleGoogleAuth}>
-          <span style={{ fontSize: 16 }}>G</span>
-          Continue with Google
-        </button>
-
-        <p className="note">Your dashboard will be determined by your account role.</p>
+        <p className="auth-bottom-inline">
+          Don&apos;t have an account?{" "}
+          <Link to="/register">Register here</Link>
+        </p>
       </div>
     </AuthLayout>
   );

@@ -2,19 +2,22 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { registerUser } from "../services/api";
-import "./Auth.css";
+import "../components/Auth.css";
 
 function Register() {
   const navigate = useNavigate();
 
   const [role, setRole] = useState("STUDENT");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
     email: "",
     studentId: "",
     staffId: "",
+    department: "",
     password: "",
     confirmPassword: "",
   });
@@ -27,15 +30,20 @@ function Register() {
     return role === "STUDENT" ? "studentId" : "staffId";
   }, [role]);
 
-  const helperText = useMemo(() => {
-    if (role !== "STAFF") return null;
-    return (
-      <div className="helper">
-        Staff accounts require verification against institutional records.
-        <br />
-        Only registered institutional staff may create staff accounts.
-      </div>
-    );
+  const accountButtonText = useMemo(() => {
+    return role === "STUDENT" ? "Create Student Account" : "Create Staff Account";
+  }, [role]);
+
+  const emailHelper = useMemo(() => {
+    return role === "STUDENT"
+      ? "Use your official student university email address."
+      : "Use your official staff university email address.";
+  }, [role]);
+
+  const idHelper = useMemo(() => {
+    return role === "STUDENT"
+      ? "9-digit number on your student card (e.g. 00-0000-000)."
+      : "Enter your official staff ID number.";
   }, [role]);
 
   const handleChange = (e) => {
@@ -102,95 +110,199 @@ function Register() {
   };
 
   return (
-    <AuthLayout>
-      <div className="auth-card">
-        <div className="tabs">
-          <Link to="/login">Login</Link>
-          <span className="active">Register</span>
+    <AuthLayout
+    >
+      <div className="auth-form-shell">
+        <p className="auth-shell-kicker">UNIVERSITY PRINT SERVICES</p>
+        <h1 className="auth-shell-title">Create your account</h1>
+        <p className="auth-shell-subtitle">
+          Join PrintIT to start submitting print jobs on campus.
+        </p>
+
+        <div className="auth-top-switch">
+          <Link to="/login" className="auth-top-switch-item">
+            Sign In
+          </Link>
+          <span className="auth-top-switch-item active">Register</span>
         </div>
 
-        <label>Select Account Type</label>
+        <div className="auth-panel">
+          <div className="auth-field-group">
+            <label>I am a...</label>
 
-        <div className="role-selector">
+            <div className="role-selector modern-role-selector">
+              <button
+                type="button"
+                className={`role-card modern-role-card ${
+                  role === "STUDENT" ? "selected" : ""
+                }`}
+                onClick={() => setRole("STUDENT")}
+              >
+                <span className="role-left">
+                  <span className="role-icon">🎓</span>
+                  Student
+                </span>
+                {role === "STUDENT" && <span className="role-dot"></span>}
+              </button>
+
+              <button
+                type="button"
+                className={`role-card modern-role-card ${
+                  role === "STAFF" ? "selected" : ""
+                }`}
+                onClick={() => setRole("STAFF")}
+              >
+                <span className="role-left">
+                  <span className="role-icon">💼</span>
+                  Staff
+                </span>
+                {role === "STAFF" && <span className="role-dot"></span>}
+              </button>
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>Full Name</label>
+            <div className="input-icon-wrap">
+              <span className="input-icon">👤</span>
+              <input
+                type="text"
+                name="fullName"
+                placeholder={
+                  role === "STUDENT"
+                    ? "Enter your full name"
+                    : "Enter your full name"
+                }
+                value={form.fullName}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>University Email</label>
+            <p className="field-helper">{emailHelper}</p>
+            <div className="input-icon-wrap">
+              <span className="input-icon">✉</span>
+              <input
+                type="email"
+                name="email"
+                placeholder={
+                  role === "STUDENT"
+                    ? "firstname.lastname@cit.edu"
+                    : "you@university.edu"
+                }
+                value={form.email}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>{idLabel}</label>
+            <p className="field-helper">{idHelper}</p>
+            <div className="input-icon-wrap">
+              <span className="input-icon">#</span>
+              <input
+                type="text"
+                name={idName}
+                placeholder={role === "STUDENT" ? "00-0000-000" : "00-0000-000"}
+                value={role === "STUDENT" ? form.studentId : form.staffId}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>Faculty / Department</label>
+            <div className="select-wrap">
+              <select
+                name="department"
+                value={form.department}
+                onChange={handleChange}
+              >
+                <option value="">Select department...</option>
+                <option value="College of Computer Studies">
+                  College of Computer Studies
+                </option>
+                <option value="Engineering">Engineering</option>
+                <option value="Business">Business</option>
+                <option value="Arts and Sciences">Arts and Sciences</option>
+                <option value="Administration">Administration</option>
+              </select>
+              <span className="select-arrow">⌄</span>
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>Password</label>
+            <div className="input-icon-wrap password-field modern">
+              <span className="input-icon">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Min. 8 characters"
+                value={form.password}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="eye-btn"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label="Toggle password"
+              >
+                {showPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>Confirm Password</label>
+            <div className="input-icon-wrap password-field modern">
+              <span className="input-icon">🔒</span>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Re-enter your password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="eye-btn"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-label="Toggle password"
+              >
+                {showConfirmPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+          </div>
+
           <button
+            className="primary-btn modern-primary"
             type="button"
-            className={`role-card ${role === "STUDENT" ? "selected" : ""}`}
-            onClick={() => setRole("STUDENT")}
+            onClick={handleRegister}
+            disabled={loading}
+            style={{ opacity: loading ? 0.8 : 1 }}
           >
-            Student
+            {loading ? "Creating..." : accountButtonText}
           </button>
 
+          <div className="divider modern-divider">
+            <span></span>
+            <div>OR</div>
+            <span></span>
+          </div>
+
           <button
+            className="google-btn modern-google-btn"
             type="button"
-            className={`role-card ${role === "STAFF" ? "selected" : ""}`}
-            onClick={() => setRole("STAFF")}
+            onClick={handleGoogleAuth}
           >
-            Staff
+            <span className="google-mark google-colored">G</span>
+            Continue with Google
           </button>
         </div>
-
-        <label>Full Name</label>
-        <input
-          type="text"
-          name="fullName"
-          value={form.fullName}
-          onChange={handleChange}
-        />
-
-        <label>Email Address</label>
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-        />
-
-        <label>{idLabel}</label>
-        <input
-          type="text"
-          name={idName}
-          value={role === "STUDENT" ? form.studentId : form.staffId}
-          onChange={handleChange}
-        />
-
-        {helperText}
-
-        <label>Password</label>
-        <input
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-        />
-
-        <label>Confirm Password</label>
-        <input
-          type="password"
-          name="confirmPassword"
-          value={form.confirmPassword}
-          onChange={handleChange}
-        />
-
-        <button
-          className="primary-btn"
-          type="button"
-          onClick={handleRegister}
-          disabled={loading}
-          style={{ opacity: loading ? 0.7 : 1 }}
-        >
-          {loading ? "Creating..." : "Register"}
-        </button>
-
-        <div className="divider">
-          <span></span>
-          <div>or</div>
-          <span></span>
-        </div>
-
-        <button className="google-btn" type="button" onClick={handleGoogleAuth}>
-          <span style={{ fontSize: 16 }}>G</span>
-          Continue with Google
-        </button>
       </div>
     </AuthLayout>
   );
