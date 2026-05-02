@@ -22,4 +22,13 @@ export const getStudentOrderById = (id, email) =>
 export const getStudentPayments = (email) =>
   api.get("/api/student/payments", { params: { email } });
 
+export const getProfile = (email) =>
+  api.get("/api/profile", { params: { email } });
+
+export const updateProfile = (data) =>
+  api.put("/api/profile", data);
+
+export const changePassword = (data) =>
+  api.put("/api/profile/change-password", data);
+
 export default api;
