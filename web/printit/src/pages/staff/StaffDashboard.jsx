@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./StaffDashboard.css";
 
@@ -6,6 +6,23 @@ function StaffDashboard() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const user = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("printit_user")) || {};
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "SF";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,7 +59,18 @@ function StaffDashboard() {
             <span className="staff-dashboard-notif-dot"></span>
           </button>
 
-          <div className="staff-dashboard-profile-badge">SF</div>
+          <button
+            className="staff-dashboard-profile-badge staff-profile-btn"
+            type="button"
+            onClick={() => navigate("/profile")}
+            title="Profile Settings"
+          >
+            {user?.profileImageUrl ? (
+              <img src={user.profileImageUrl} alt="Profile" className="staff-avatar-image" />
+            ) : (
+              initials
+            )}
+          </button>
 
           <div className="staff-dashboard-menu-wrap" ref={menuRef}>
             <button
@@ -55,6 +83,17 @@ function StaffDashboard() {
 
             {menuOpen && (
               <div className="staff-dashboard-menu-dropdown">
+                <button
+                  className="staff-dashboard-menu-action"
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate("/profile");
+                  }}
+                >
+                  Profile Settings
+                </button>
+
                 <button
                   className="staff-dashboard-logout-btn"
                   type="button"

@@ -78,6 +78,19 @@
   font-weight: 700;
 }
 
+.admin-profile-btn {
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+
+.admin-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .menu-wrap {
   position: relative;
 }
@@ -95,7 +108,20 @@
   border-radius: 10px;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
   padding: 8px;
-  min-width: 140px;
+  min-width: 180px;
+  display: grid;
+  gap: 8px;
+}
+
+.menu-action-btn {
+  width: 100%;
+  border: 1px solid #ddd;
+  background: #ffffff;
+  color: #111827;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .logout-btn {

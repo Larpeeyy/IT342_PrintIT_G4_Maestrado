@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
@@ -6,6 +6,23 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const user = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("printit_user")) || {};
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "AD";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -86,7 +103,18 @@ function AdminDashboard() {
             <span className="notif-dot"></span>
           </button>
 
-          <div className="profile-badge">AD</div>
+          <button
+            className="profile-badge admin-profile-btn"
+            type="button"
+            onClick={() => navigate("/profile")}
+            title="Profile Settings"
+          >
+            {user?.profileImageUrl ? (
+              <img src={user.profileImageUrl} alt="Profile" className="admin-avatar-image" />
+            ) : (
+              initials
+            )}
+          </button>
 
           <div className="menu-wrap" ref={menuRef}>
             <button
@@ -99,6 +127,17 @@ function AdminDashboard() {
 
             {menuOpen && (
               <div className="menu-dropdown">
+                <button
+                  className="menu-action-btn"
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate("/profile");
+                  }}
+                >
+                  Profile Settings
+                </button>
+
                 <button
                   className="logout-btn"
                   type="button"

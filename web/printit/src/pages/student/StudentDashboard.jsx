@@ -95,7 +95,19 @@ function StudentDashboard() {
 
         <div className="student-ui-top-actions">
           <button className="student-ui-bell" type="button"></button>
-          <div className="student-ui-avatar">{initials}</div>
+
+          <button
+            className="student-ui-avatar student-avatar-btn"
+            type="button"
+            onClick={() => navigate("/profile")}
+            title="Profile Settings"
+          >
+            {user?.profileImageUrl ? (
+              <img src={user.profileImageUrl} alt="Profile" className="student-avatar-image" />
+            ) : (
+              initials
+            )}
+          </button>
         </div>
       </header>
 
@@ -199,6 +211,7 @@ function StudentDashboard() {
               <button onClick={() => navigate("/student/new-order")}>Create New Order</button>
               <button onClick={() => navigate("/student/orders")}>View All Orders</button>
               <button onClick={() => navigate("/student/payments")}>Payment History</button>
+              <button onClick={() => navigate("/profile")}>Profile Settings</button>
               <button onClick={handleLogout}>Logout</button>
             </div>
           </div>
