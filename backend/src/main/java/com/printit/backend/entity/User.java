@@ -28,6 +28,12 @@ public class User {
     @Column(name = "staff_id")
     private String staffId;
 
+    @Column(unique = true)
+    private String username;
+
+    @Column(name = "profile_image_url", columnDefinition = "text")
+    private String profileImageUrl;
+
     public User() {
     }
 
@@ -88,5 +94,21 @@ public class User {
 
     public void setStaffId(String staffId) {
         this.staffId = staffId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

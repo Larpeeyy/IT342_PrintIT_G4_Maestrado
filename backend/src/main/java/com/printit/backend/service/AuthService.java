@@ -53,6 +53,8 @@ public class AuthService {
             user.setStudentId(null);
             user.setStaffId(null);
         }
+        user.setUsername(request.getEmail().split("@")[0]);
+        user.setProfileImageUrl(null);
 
         return userRepository.save(user);
     }
