@@ -17,6 +17,15 @@ function Payments() {
     }
   }, []);
 
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "JD";
+
   useEffect(() => {
     const loadPayments = async () => {
       try {
@@ -78,7 +87,22 @@ function Payments() {
           </button>
         </nav>
 
-        <div className="payments-user">JD</div>
+        <button
+          className="payments-user payments-user-btn"
+          type="button"
+          onClick={() => navigate("/profile")}
+          title="Profile Settings"
+        >
+          {user?.profileImageUrl ? (
+            <img
+              src={user.profileImageUrl}
+              alt="Profile"
+              className="payments-user-image"
+            />
+          ) : (
+            initials
+          )}
+        </button>
       </header>
 
       <main className="payments-content">

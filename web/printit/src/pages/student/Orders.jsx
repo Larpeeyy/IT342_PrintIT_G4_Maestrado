@@ -17,6 +17,15 @@ function Orders() {
     }
   }, []);
 
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "JD";
+
   useEffect(() => {
     const loadOrders = async () => {
       try {
@@ -76,7 +85,22 @@ function Orders() {
           <button onClick={() => navigate("/student/payments")}>Payments</button>
         </nav>
 
-        <div className="orders-user">JD</div>
+        <button
+          className="orders-user orders-user-btn"
+          type="button"
+          onClick={() => navigate("/profile")}
+          title="Profile Settings"
+        >
+          {user?.profileImageUrl ? (
+            <img
+              src={user.profileImageUrl}
+              alt="Profile"
+              className="orders-user-image"
+            />
+          ) : (
+            initials
+          )}
+        </button>
       </header>
 
       <main className="orders-content">
@@ -127,7 +151,9 @@ function Orders() {
                 <tr key={order.id}>
                   <td>{order.orderCode}</td>
                   <td>{order.fileName}</td>
-                  <td>{order.paperSize}, {order.colorMode}, {order.copies} copy/copies</td>
+                  <td>
+                    {order.paperSize}, {order.colorMode}, {order.copies} copy/copies
+                  </td>
                   <td>
                     <span className={`orders-status ${getStatusClass(order.status)}`}>
                       {order.status}
