@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, LogOut, Settings } from "lucide-react";
+import {
+  ChevronDown,
+  LogOut,
+  Settings,
+  User,
+  Lock,
+  Camera,
+  Save,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { changePassword, getProfile, updateProfile } from "../services/api";
 import { supabase } from "../services/supabaseClient";
 import NotificationBell from "../components/NotificationBell";
@@ -474,7 +484,9 @@ function ProfileSettings() {
 
         <section className="profile-card">
           <div className="profile-card-header">
-            <div className="profile-section-icon">👤</div>
+            <div className="profile-section-icon">
+              <User size={20} />
+            </div>
             <div>
               <h2>Profile Information</h2>
               <p>Update your personal details</p>
@@ -510,7 +522,8 @@ function ProfileSettings() {
                 onClick={handleChoosePhoto}
                 disabled={uploadingPhoto}
               >
-                {uploadingPhoto ? "Uploading..." : "📷 Change Photo"}
+                <Camera size={16} />
+                <span>{uploadingPhoto ? "Uploading..." : "Change Photo"}</span>
               </button>
 
               <small>JPG or PNG, max 2 MB</small>
@@ -577,7 +590,8 @@ function ProfileSettings() {
                   onClick={handleSaveProfile}
                   disabled={savingProfile}
                 >
-                  {savingProfile ? "Saving..." : "💾 Save Changes"}
+                  <Save size={16} />
+                  <span>{savingProfile ? "Saving..." : "Save Changes"}</span>
                 </button>
               </div>
             </div>
@@ -586,7 +600,9 @@ function ProfileSettings() {
 
         <section className="profile-card">
           <div className="profile-card-header">
-            <div className="profile-section-icon">🔒</div>
+            <div className="profile-section-icon">
+              <Lock size={20} />
+            </div>
             <div>
               <h2>Change Password</h2>
               <p>Keep your account secure with a strong password</p>
@@ -609,8 +625,9 @@ function ProfileSettings() {
                     type="button"
                     className="eye-toggle-btn"
                     onClick={() => setShowCurrentPassword((prev) => !prev)}
+                    aria-label="Toggle current password visibility"
                   >
-                    {showCurrentPassword ? "🙈" : "👁"}
+                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
@@ -629,8 +646,9 @@ function ProfileSettings() {
                     type="button"
                     className="eye-toggle-btn"
                     onClick={() => setShowNewPassword((prev) => !prev)}
+                    aria-label="Toggle new password visibility"
                   >
-                    {showNewPassword ? "🙈" : "👁"}
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
@@ -649,8 +667,9 @@ function ProfileSettings() {
                     type="button"
                     className="eye-toggle-btn"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    aria-label="Toggle confirm password visibility"
                   >
-                    {showConfirmPassword ? "🙈" : "👁"}
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
@@ -667,7 +686,8 @@ function ProfileSettings() {
                 onClick={handleChangePassword}
                 disabled={savingPassword}
               >
-                {savingPassword ? "Updating..." : "🔒 Update Password"}
+                <Lock size={16} />
+                <span>{savingPassword ? "Updating..." : "Update Password"}</span>
               </button>
 
               <button type="button" className="cancel-btn" onClick={handleLogout}>

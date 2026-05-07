@@ -20,6 +20,7 @@ function Orders() {
     const loadOrders = async () => {
       try {
         if (!user?.email) return;
+
         const res = await getStudentOrders(user.email);
         setOrders(res.data || []);
       } catch (error) {
@@ -34,12 +35,14 @@ function Orders() {
     if (status === "Ready for Pickup") return "status-green";
     if (status === "Printing") return "status-blue";
     if (status === "Pending") return "status-yellow";
-    if (status === "Cancelled") return "status-red";
+    if (status === "Completed") return "status-gray";
+
     return "status-gray";
   };
 
   const formatDate = (value) => {
     if (!value) return "";
+
     return new Date(value).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -74,13 +77,15 @@ function Orders() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option>All Status</option>
-            <option>Pending</option>
-            <option>Printing</option>
-            <option>Ready for Pickup</option>
-            <option>Completed</option>
-            <option>Cancelled</option>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All Status">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Printing">Printing</option>
+            <option value="Ready for Pickup">Ready for Pickup</option>
+            <option value="Completed">Completed</option>
           </select>
         </section>
 
@@ -105,22 +110,35 @@ function Orders() {
             </thead>
 
             <tbody>
-              {filteredOrders.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.orderCode}</td>
-                  <td>{order.fileName}</td>
-                  <td>
-                    {order.paperSize}, {order.colorMode}, {order.copies} copy/copies
+              {filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="orders-empty-row">
+                    No orders found.
                   </td>
-                  <td>
-                    <span className={`orders-status ${getStatusClass(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td>{formatDate(order.createdAt)}</td>
-                  <td>P {Number(order.totalAmount || 0).toFixed(2)}</td>
                 </tr>
-              ))}
+              ) : (
+                filteredOrders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.orderCode || "-"}</td>
+                    <td>{order.fileName || "-"}</td>
+                    <td>
+                      {order.paperSize || "-"}, {order.colorMode || "-"},{" "}
+                      {order.copies || 0} copy/copies
+                    </td>
+                    <td>
+                      <span
+                        className={`orders-status ${getStatusClass(
+                          order.status
+                        )}`}
+                      >
+                        {order.status || "Pending"}
+                      </span>
+                    </td>
+                    <td>{formatDate(order.createdAt)}</td>
+                    <td>P {Number(order.totalAmount || 0).toFixed(2)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </section>

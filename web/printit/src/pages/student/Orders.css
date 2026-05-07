@@ -12,11 +12,14 @@
 .orders-content h1 {
   font-size: 32px;
   margin: 14px 0 8px;
+  font-weight: 700;
+  color: #111827;
 }
 
 .orders-content p {
   margin: 0 0 24px;
   color: #667085;
+  font-size: 15px;
 }
 
 .orders-toolbar {
@@ -36,10 +39,22 @@
   border-radius: 14px;
   padding: 0 14px;
   font-size: 15px;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
 }
 
 .orders-toolbar input {
   flex: 1;
+}
+
+.orders-toolbar input::placeholder {
+  color: #667085;
+}
+
+.orders-toolbar input:focus,
+.orders-toolbar select:focus {
+  border-color: #9b2c3a;
 }
 
 .orders-table-card {
@@ -47,15 +62,20 @@
   border: 1px solid #ddd;
   border-radius: 22px;
   padding: 22px 24px;
+  overflow-x: auto;
 }
 
 .orders-table-header h3 {
   margin: 0 0 4px;
   font-size: 18px;
+  font-weight: 700;
+  color: #111827;
 }
 
 .orders-table-header p {
   margin: 0 0 18px;
+  color: #667085;
+  font-size: 14px;
 }
 
 .orders-table {
@@ -69,12 +89,28 @@
   padding: 16px 8px;
   border-top: 1px solid #eee;
   font-size: 15px;
+  vertical-align: middle;
+}
+
+.orders-table th {
+  font-weight: 600;
+  color: #111827;
+}
+
+.orders-table td {
+  color: #111827;
+  font-weight: 400;
 }
 
 .orders-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 5px 10px;
   border-radius: 999px;
   font-size: 13px;
+  font-weight: 400;
+  min-width: 78px;
 }
 
 .status-green {
@@ -92,14 +128,15 @@
   color: #9c6500;
 }
 
-.status-red {
-  background: #ffd7d7;
-  color: #c5221f;
-}
-
 .status-gray {
   background: #ececec;
   color: #555;
+}
+
+.orders-empty-row {
+  text-align: center;
+  color: #667085;
+  padding: 28px 8px !important;
 }
 
 .orders-actions {

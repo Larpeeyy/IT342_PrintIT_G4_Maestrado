@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
 import { loginUser } from "../services/api";
 import "../components/Auth.css";
@@ -69,8 +75,6 @@ function Login() {
       }
 
       localStorage.setItem("printit_user", JSON.stringify(res.data));
-
-      alert("Login successful!");
       redirectByRole(res.data.role);
     } catch (e) {
       const msg =
@@ -87,7 +91,6 @@ function Login() {
   const handleGoogleAuth = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
-
 
   return (
     <AuthLayout
@@ -114,7 +117,9 @@ function Login() {
           <div className="auth-field-group">
             <label>University Email</label>
             <div className="input-icon-wrap">
-              <span className="input-icon">✉</span>
+              <span className="input-icon">
+                <Mail size={18} />
+              </span>
               <input
                 type="email"
                 name="email"
@@ -132,7 +137,9 @@ function Login() {
             </div>
 
             <div className="input-icon-wrap password-field modern">
-              <span className="input-icon">🔒</span>
+              <span className="input-icon">
+                <Lock size={18} />
+              </span>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -146,7 +153,7 @@ function Login() {
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label="Toggle password"
               >
-                {showPassword ? "🙈" : "👁"}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -182,7 +189,6 @@ function Login() {
             <span className="google-mark google-colored">G</span>
             Continue with Google
           </button>
-
         </div>
 
         <p className="auth-bottom-inline">

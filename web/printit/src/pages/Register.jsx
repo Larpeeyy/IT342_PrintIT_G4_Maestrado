@@ -1,5 +1,16 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  GraduationCap,
+  BriefcaseBusiness,
+  User,
+  Mail,
+  Hash,
+  Lock,
+  Eye,
+  EyeOff,
+  ChevronDown,
+} from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
 import { registerUser } from "../services/api";
 import "../components/Auth.css";
@@ -110,8 +121,7 @@ function Register() {
   };
 
   return (
-    <AuthLayout
-    >
+    <AuthLayout>
       <div className="auth-form-shell">
         <p className="auth-shell-kicker">UNIVERSITY PRINT SERVICES</p>
         <h1 className="auth-shell-title">Create your account</h1>
@@ -139,7 +149,9 @@ function Register() {
                 onClick={() => setRole("STUDENT")}
               >
                 <span className="role-left">
-                  <span className="role-icon">🎓</span>
+                  <span className="role-icon">
+                    <GraduationCap size={16} />
+                  </span>
                   Student
                 </span>
                 {role === "STUDENT" && <span className="role-dot"></span>}
@@ -153,7 +165,9 @@ function Register() {
                 onClick={() => setRole("STAFF")}
               >
                 <span className="role-left">
-                  <span className="role-icon">💼</span>
+                  <span className="role-icon">
+                    <BriefcaseBusiness size={16} />
+                  </span>
                   Staff
                 </span>
                 {role === "STAFF" && <span className="role-dot"></span>}
@@ -164,15 +178,13 @@ function Register() {
           <div className="auth-field-group">
             <label>Full Name</label>
             <div className="input-icon-wrap">
-              <span className="input-icon">👤</span>
+              <span className="input-icon">
+                <User size={18} />
+              </span>
               <input
                 type="text"
                 name="fullName"
-                placeholder={
-                  role === "STUDENT"
-                    ? "Enter your full name"
-                    : "Enter your full name"
-                }
+                placeholder="Enter your full name"
                 value={form.fullName}
                 onChange={handleChange}
               />
@@ -183,7 +195,9 @@ function Register() {
             <label>University Email</label>
             <p className="field-helper">{emailHelper}</p>
             <div className="input-icon-wrap">
-              <span className="input-icon">✉</span>
+              <span className="input-icon">
+                <Mail size={18} />
+              </span>
               <input
                 type="email"
                 name="email"
@@ -202,11 +216,13 @@ function Register() {
             <label>{idLabel}</label>
             <p className="field-helper">{idHelper}</p>
             <div className="input-icon-wrap">
-              <span className="input-icon">#</span>
+              <span className="input-icon">
+                <Hash size={18} />
+              </span>
               <input
                 type="text"
                 name={idName}
-                placeholder={role === "STUDENT" ? "00-0000-000" : "00-0000-000"}
+                placeholder="00-0000-000"
                 value={role === "STUDENT" ? form.studentId : form.staffId}
                 onChange={handleChange}
               />
@@ -230,14 +246,18 @@ function Register() {
                 <option value="Arts and Sciences">Arts and Sciences</option>
                 <option value="Administration">Administration</option>
               </select>
-              <span className="select-arrow">⌄</span>
+              <span className="select-arrow">
+                <ChevronDown size={16} />
+              </span>
             </div>
           </div>
 
           <div className="auth-field-group">
             <label>Password</label>
             <div className="input-icon-wrap password-field modern">
-              <span className="input-icon">🔒</span>
+              <span className="input-icon">
+                <Lock size={18} />
+              </span>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -251,7 +271,7 @@ function Register() {
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label="Toggle password"
               >
-                {showPassword ? "🙈" : "👁"}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -259,7 +279,9 @@ function Register() {
           <div className="auth-field-group">
             <label>Confirm Password</label>
             <div className="input-icon-wrap password-field modern">
-              <span className="input-icon">🔒</span>
+              <span className="input-icon">
+                <Lock size={18} />
+              </span>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
@@ -273,7 +295,7 @@ function Register() {
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
                 aria-label="Toggle password"
               >
-                {showConfirmPassword ? "🙈" : "👁"}
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>

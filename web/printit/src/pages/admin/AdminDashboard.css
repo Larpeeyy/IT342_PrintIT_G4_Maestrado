@@ -6,63 +6,101 @@
 }
 
 .admin-content {
-  padding: 20px 24px 28px;
+  padding: 16px 28px 28px;
+  box-sizing: border-box;
+}
+
+.admin-heading {
+  margin-bottom: 20px;
 }
 
 .admin-heading h1 {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-size: 34px;
-  font-weight: 800;
+  font-weight: 700;
+  color: #111827;
 }
 
 .admin-heading p {
-  margin: 0 0 22px;
+  margin: 0;
   color: #667085;
   font-size: 15px;
+  font-weight: 400;
 }
+
+/* STATS */
 
 .admin-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .admin-stat-card {
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 22px;
-  padding: 22px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  min-height: 138px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
 }
 
-.admin-stat-card span {
-  display: block;
+.admin-stat-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.admin-stat-text span {
   color: #667085;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 15px;
+  margin: 0;
+  font-weight: 400;
 }
 
-.admin-stat-card h2 {
-  margin: 0 0 8px;
-  font-size: 30px;
-  font-weight: 800;
+.admin-stat-text h2 {
+  font-size: 18px;
+  margin: 8px 0;
+  font-weight: 700;
   color: #111827;
 }
 
-.admin-stat-card p {
+.admin-stat-text p {
   margin: 0;
   color: #667085;
   font-size: 14px;
-  line-height: 1.5;
+  font-weight: 400;
 }
+
+.admin-stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: #f3e8ea;
+  color: #9b2c3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-stat-icon svg {
+  stroke-width: 2;
+}
+
+/* PANEL */
 
 .admin-panel {
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 22px;
-  padding: 22px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 22px 24px;
+  box-sizing: border-box;
 }
 
 .admin-panel-header {
@@ -74,9 +112,9 @@
 }
 
 .admin-panel-header h3 {
-  margin: 0 0 6px;
-  font-size: 22px;
-  font-weight: 800;
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
   color: #111827;
 }
 
@@ -84,49 +122,50 @@
   margin: 0;
   color: #667085;
   font-size: 14px;
-  line-height: 1.5;
+  font-weight: 400;
 }
 
 .admin-refresh-btn {
-  border: 1px solid #d6d6d6;
+  border: 1px solid #dddddd;
   background: #ffffff;
   color: #111827;
-  border-radius: 12px;
-  padding: 10px 16px;
+  border-radius: 14px;
+  padding: 11px 18px;
   cursor: pointer;
+  font-size: 14px;
   font-weight: 600;
-  transition: 0.2s ease;
 }
 
 .admin-refresh-btn:hover {
-  background: #f9fafb;
+  background: #f9f7f8;
 }
 
 .admin-empty-text {
   margin: 0;
   color: #667085;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .admin-request-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
 }
 
 .admin-request-card {
+  border: 1px solid #dddddd;
+  border-radius: 18px;
+  padding: 18px 18px;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border: 1px solid #ececec;
-  border-radius: 16px;
-  padding: 16px;
-  background: #fffdfd;
 }
 
 .admin-request-info h4 {
-  margin: 0 0 6px;
-  font-size: 18px;
+  margin: 0 0 8px;
+  font-size: 16px;
   font-weight: 700;
   color: #111827;
 }
@@ -152,11 +191,11 @@
 .approve-btn,
 .reject-btn {
   border: none;
-  border-radius: 10px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 11px 16px;
   cursor: pointer;
-  font-weight: 700;
-  transition: 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .approve-btn {
@@ -165,7 +204,7 @@
 }
 
 .approve-btn:hover {
-  background: #842432;
+  background: #862735;
 }
 
 .reject-btn {
@@ -177,15 +216,17 @@
   background: #e6e6e6;
 }
 
+/* RESPONSIVE */
+
 @media (max-width: 1100px) {
   .admin-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   .admin-content {
-    padding: 16px;
+    padding: 16px 20px 28px;
   }
 
   .admin-heading h1 {

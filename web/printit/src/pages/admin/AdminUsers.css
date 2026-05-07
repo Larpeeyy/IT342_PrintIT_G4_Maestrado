@@ -1,17 +1,33 @@
+.admin-page {
+  min-height: 100vh;
+  background: #f5f3f4;
+  font-family: Arial, sans-serif;
+  color: #111827;
+}
+
 .admin-users-content {
-  padding: 20px 24px 28px;
+  padding: 16px 28px 28px;
   background: #f5f3f4;
   min-height: calc(100vh - 58px);
+  box-sizing: border-box;
 }
 
-.admin-users-content h1 {
-  margin: 0 0 8px;
+.admin-users-heading {
+  margin-bottom: 20px;
+}
+
+.admin-users-heading h1 {
+  margin: 0 0 6px;
   font-size: 34px;
+  font-weight: 700;
+  color: #111827;
 }
 
-.admin-users-content p {
-  margin: 0 0 20px;
+.admin-users-heading p {
+  margin: 0;
   color: #667085;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 .admin-users-toolbar {
@@ -26,14 +42,33 @@
   padding: 0 14px;
   font-size: 15px;
   background: #ffffff;
+  color: #111827;
+  outline: none;
+  box-sizing: border-box;
 }
 
-.admin-users-table-card {
+.admin-users-toolbar input::placeholder {
+  color: #667085;
+}
+
+.admin-users-toolbar input:focus {
+  border-color: #9b2c3a;
+}
+
+.admin-users-card {
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 22px;
-  padding: 20px;
+  padding: 22px 24px;
+  width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
+}
+
+.admin-users-empty-text {
+  color: #667085;
+  margin: 0;
+  font-size: 14px;
 }
 
 .admin-users-table {
@@ -44,12 +79,68 @@
 .admin-users-table th,
 .admin-users-table td {
   text-align: left;
-  padding: 14px 8px;
-  border-bottom: 1px solid #ececec;
+  padding: 16px 8px;
+  border-top: 1px solid #eeeeee;
   font-size: 14px;
+  vertical-align: middle;
 }
 
 .admin-users-table th {
-  color: #667085;
+  color: #111827;
+  font-weight: 600;
+}
+
+.admin-users-table td {
+  color: #111827;
+  font-weight: 400;
+}
+
+/* Approval Status pill only */
+.admin-users-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  padding: 5px 12px;
+  border-radius: 999px;
   font-size: 13px;
+  font-weight: 400;
+}
+
+/* APPROVED = green */
+.admin-users-status-green {
+  background: #d9f8dd;
+  color: #137333;
+}
+
+/* PENDING = yellow */
+.admin-users-status-yellow {
+  background: #fbe8a7;
+  color: #9c6500;
+}
+
+/* REJECTED = red */
+.admin-users-status-red {
+  background: #f3e8ea;
+  color: #9b2c3a;
+}
+
+/* Empty / unknown */
+.admin-users-status-gray {
+  background: #ececec;
+  color: #555555;
+}
+
+@media (max-width: 800px) {
+  .admin-users-content {
+    padding: 16px 20px 28px;
+  }
+
+  .admin-users-heading h1 {
+    font-size: 28px;
+  }
+
+  .admin-users-table {
+    min-width: 900px;
+  }
 }

@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  Clock3,
+  Printer,
+  PackageCheck,
+  CheckCircle2,
+  FileText,
+  Download,
+} from "lucide-react";
 import StaffTopbar from "../../components/StaffTopbar";
 import { getStaffOrderById, updateStaffOrderStatus } from "../../services/api";
 import "./StaffViewOrder.css";
@@ -17,11 +26,15 @@ function StaffViewOrder() {
     try {
       setLoading(true);
       const res = await getStaffOrderById(orderId);
-      setOrder(res.data);
+      setOrder(res.data || null);
       setStatus(res.data?.status || "Pending");
     } catch (error) {
       console.error("Failed to load order:", error);
-      alert(error?.response?.data?.message || error?.message || "Failed to load order.");
+      alert(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to load order."
+      );
     } finally {
       setLoading(false);
     }
@@ -39,7 +52,11 @@ function StaffViewOrder() {
       alert("Order status updated.");
     } catch (error) {
       console.error("Update failed:", error);
-      alert(error?.response?.data?.message || error?.message || "Failed to update order.");
+      alert(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to update order."
+      );
     } finally {
       setSaving(false);
     }
@@ -54,10 +71,50 @@ function StaffViewOrder() {
       alert("Order marked as completed.");
     } catch (error) {
       console.error("Complete failed:", error);
-      alert(error?.response?.data?.message || error?.message || "Failed to mark order as completed.");
+      alert(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to mark order as completed."
+      );
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDownloadFile = () => {
+    if (order?.fileUrl) {
+      window.open(order.fileUrl, "_blank");
+    } else {
+      alert("File download is not available.");
+    }
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "-";
+
+    return new Date(value).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const getStepClass = (step) => {
+    const steps = ["Pending", "Printing", "Ready for Pickup", "Completed"];
+    const currentIndex = steps.indexOf(order?.status || "Pending");
+    const stepIndex = steps.indexOf(step);
+
+    if (stepIndex < currentIndex) return "staff-progress-step done";
+    if (stepIndex === currentIndex) return "staff-progress-step active";
+    return "staff-progress-step";
+  };
+
+  const getStatusClass = (value) => {
+    if (value === "Pending") return "staff-order-status-yellow";
+    if (value === "Printing") return "staff-order-status-pink";
+    if (value === "Ready for Pickup") return "staff-order-status-beige";
+    if (value === "Completed") return "staff-order-status-gray";
+    return "staff-order-status-gray";
   };
 
   return (
@@ -65,55 +122,149 @@ function StaffViewOrder() {
       <StaffTopbar activeTab="orders" />
 
       <main className="staff-view-order-content">
-        <button className="staff-back-btn" onClick={() => navigate("/staff/orders")}>
-          ← Back to Orders Queue
+        <button
+          className="staff-back-btn"
+          type="button"
+          onClick={() => navigate("/staff/orders")}
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Orders Queue</span>
         </button>
 
         {loading ? (
-          <p>Loading order details...</p>
+          <p className="staff-view-message">Loading order details...</p>
         ) : !order ? (
-          <p>Order not found.</p>
+          <p className="staff-view-message">Order not found.</p>
         ) : (
           <>
             <section className="staff-view-header">
-              <h1>Order {order.orderCode}</h1>
-              <p>
-                Submitted on{" "}
-                {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "-"}
-              </p>
+              <h1>Order {order.orderCode || `ORD-${order.id}`}</h1>
+              <p>Submitted on {formatDate(order.createdAt)}</p>
+            </section>
+
+            <section className="staff-progress-card">
+              <div className={getStepClass("Pending")}>
+                <div className="staff-progress-icon">
+                  <Clock3 size={18} />
+                </div>
+                <span>Pending</span>
+              </div>
+
+              <div className="staff-progress-line"></div>
+
+              <div className={getStepClass("Printing")}>
+                <div className="staff-progress-icon">
+                  <Printer size={18} />
+                </div>
+                <span>Printing</span>
+              </div>
+
+              <div className="staff-progress-line"></div>
+
+              <div className={getStepClass("Ready for Pickup")}>
+                <div className="staff-progress-icon">
+                  <PackageCheck size={18} />
+                </div>
+                <span>Ready</span>
+              </div>
+
+              <div className="staff-progress-line"></div>
+
+              <div className={getStepClass("Completed")}>
+                <div className="staff-progress-icon">
+                  <CheckCircle2 size={18} />
+                </div>
+                <span>Completed</span>
+              </div>
             </section>
 
             <section className="staff-view-grid">
               <div className="staff-view-card">
                 <h3>File Preview</h3>
+
                 <div className="staff-file-box">
-                  <div className="staff-file-icon">📄</div>
-                  <strong>{order.fileName}</strong>
+                  <div className="staff-file-icon">
+                    <FileText size={40} />
+                  </div>
+                  <strong>{order.fileName || "-"}</strong>
                   <small>Preview not available</small>
                 </div>
+
+                <button
+                  className="staff-download-btn"
+                  type="button"
+                  onClick={handleDownloadFile}
+                >
+                  <Download size={16} />
+                  <span>Download File</span>
+                </button>
               </div>
 
               <div className="staff-view-card">
                 <h3>Order Information</h3>
+
                 <div className="staff-info-list">
-                  <div><span>Student Name</span><strong>{order.studentName}</strong></div>
-                  <div><span>Email</span><strong>{order.email}</strong></div>
-                  <div><span>File Name</span><strong>{order.fileName}</strong></div>
-                  <div><span>Paper Size</span><strong>{order.paperSize}</strong></div>
-                  <div><span>Color Option</span><strong>{order.colorMode}</strong></div>
-                  <div><span>Copies</span><strong>{order.copies}</strong></div>
-                  <div><span>Status</span><strong>{order.status}</strong></div>
-                  <div><span>Total</span><strong>P {Number(order.totalAmount || 0).toFixed(2)}</strong></div>
+                  <div>
+                    <span>Student Name</span>
+                    <strong>{order.studentName || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Email</span>
+                    <strong>{order.email || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>File Name</span>
+                    <strong>{order.fileName || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Paper Size</span>
+                    <strong>{order.paperSize || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Color Option</span>
+                    <strong>{order.colorMode || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Copies</span>
+                    <strong>{order.copies || 0}</strong>
+                  </div>
+
+                  <div>
+                    <span>Status</span>
+                    <strong
+                      className={`staff-order-status-pill ${getStatusClass(
+                        order.status
+                      )}`}
+                    >
+                      {order.status || "Pending"}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Total</span>
+                    <strong>
+                      P {Number(order.totalAmount || 0).toFixed(2)}
+                    </strong>
+                  </div>
                 </div>
               </div>
             </section>
 
-            <section className="staff-view-card">
+            <section className="staff-update-card">
               <h3>Update Order Status</h3>
 
               <div className="staff-status-form">
-                <label>Status</label>
-                <select value={status} onChange={(e) => setStatus(e.target.value)}>
+                <label htmlFor="orderStatus">Status</label>
+                <select
+                  id="orderStatus"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
                   <option value="Pending">Pending</option>
                   <option value="Printing">Printing</option>
                   <option value="Ready for Pickup">Ready for Pickup</option>
@@ -122,11 +273,21 @@ function StaffViewOrder() {
               </div>
 
               <div className="staff-status-actions">
-                <button className="staff-save-btn" onClick={handleSaveStatus} disabled={saving}>
+                <button
+                  className="staff-save-btn"
+                  type="button"
+                  onClick={handleSaveStatus}
+                  disabled={saving}
+                >
                   {saving ? "Saving..." : "Save Status"}
                 </button>
 
-                <button className="staff-complete-btn" onClick={handleComplete} disabled={saving}>
+                <button
+                  className="staff-complete-btn"
+                  type="button"
+                  onClick={handleComplete}
+                  disabled={saving}
+                >
                   Mark as Completed
                 </button>
               </div>

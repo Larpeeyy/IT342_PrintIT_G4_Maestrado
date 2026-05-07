@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+  Users,
+  GraduationCap,
+  UserCheck,
+  Clock3,
+} from "lucide-react";
 import AdminTopbar from "../../components/AdminTopbar";
 import {
   getAdminDashboard,
@@ -22,7 +28,14 @@ function AdminDashboard() {
     try {
       setLoading(true);
       const res = await getAdminDashboard();
-      setSummary(res.data || {});
+
+      setSummary({
+        totalUsers: res.data?.totalUsers || 0,
+        totalStudents: res.data?.totalStudents || 0,
+        approvedStaff: res.data?.approvedStaff || 0,
+        pendingStaff: res.data?.pendingStaff || 0,
+        pendingStaffRequests: res.data?.pendingStaffRequests || [],
+      });
     } catch (error) {
       console.error("Failed to load admin dashboard:", error);
       alert(
@@ -81,27 +94,51 @@ function AdminDashboard() {
 
         <section className="admin-stats-grid">
           <div className="admin-stat-card">
-            <span>Total Users</span>
-            <h2>{summary.totalUsers || 0}</h2>
-            <p>All registered accounts</p>
+            <div className="admin-stat-text">
+              <span>Total Users</span>
+              <h2>{loading ? "..." : summary.totalUsers}</h2>
+              <p>All registered accounts</p>
+            </div>
+
+            <div className="admin-stat-icon">
+              <Users size={22} />
+            </div>
           </div>
 
           <div className="admin-stat-card">
-            <span>Students</span>
-            <h2>{summary.totalStudents || 0}</h2>
-            <p>Approved student accounts</p>
+            <div className="admin-stat-text">
+              <span>Students</span>
+              <h2>{loading ? "..." : summary.totalStudents}</h2>
+              <p>Approved student accounts</p>
+            </div>
+
+            <div className="admin-stat-icon">
+              <GraduationCap size={22} />
+            </div>
           </div>
 
           <div className="admin-stat-card">
-            <span>Approved Staff</span>
-            <h2>{summary.approvedStaff || 0}</h2>
-            <p>Allowed to access staff dashboard</p>
+            <div className="admin-stat-text">
+              <span>Approved Staff</span>
+              <h2>{loading ? "..." : summary.approvedStaff}</h2>
+              <p>Allowed to access staff dashboard</p>
+            </div>
+
+            <div className="admin-stat-icon">
+              <UserCheck size={22} />
+            </div>
           </div>
 
           <div className="admin-stat-card">
-            <span>Pending Staff Requests</span>
-            <h2>{summary.pendingStaff || 0}</h2>
-            <p>Requires admin action</p>
+            <div className="admin-stat-text">
+              <span>Pending Staff Requests</span>
+              <h2>{loading ? "..." : summary.pendingStaff}</h2>
+              <p>Requires admin action</p>
+            </div>
+
+            <div className="admin-stat-icon">
+              <Clock3 size={22} />
+            </div>
           </div>
         </section>
 
@@ -109,7 +146,9 @@ function AdminDashboard() {
           <div className="admin-panel-header">
             <div>
               <h3>Pending Staff Requests</h3>
-              <p>Review and approve staff registrations before access is granted.</p>
+              <p>
+                Review and approve staff registrations before access is granted.
+              </p>
             </div>
 
             <button className="admin-refresh-btn" onClick={loadSummary}>
@@ -119,15 +158,15 @@ function AdminDashboard() {
 
           {loading ? (
             <p className="admin-empty-text">Loading requests...</p>
-          ) : !summary.pendingStaffRequests || summary.pendingStaffRequests.length === 0 ? (
+          ) : summary.pendingStaffRequests.length === 0 ? (
             <p className="admin-empty-text">No pending staff requests.</p>
           ) : (
             <div className="admin-request-list">
               {summary.pendingStaffRequests.map((staff) => (
                 <div key={staff.id} className="admin-request-card">
                   <div className="admin-request-info">
-                    <h4>{staff.fullName}</h4>
-                    <p>{staff.email}</p>
+                    <h4>{staff.fullName || "Unnamed Staff"}</h4>
+                    <p>{staff.email || "-"}</p>
                     <small>Staff ID: {staff.staffId || "Not set"}</small>
                   </div>
 
@@ -138,6 +177,7 @@ function AdminDashboard() {
                     >
                       Approve
                     </button>
+
                     <button
                       className="reject-btn"
                       onClick={() => handleReject(staff.id)}
