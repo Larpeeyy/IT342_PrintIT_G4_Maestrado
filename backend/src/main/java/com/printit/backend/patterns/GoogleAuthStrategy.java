@@ -5,8 +5,6 @@ import com.printit.backend.entity.User;
 import com.printit.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class GoogleAuthStrategy implements AuthStrategy {
 
@@ -18,24 +16,25 @@ public class GoogleAuthStrategy implements AuthStrategy {
 
     @Override
     public User authenticate(AuthRequest request) {
-        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Account not found. Please register first."));
 
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
+        if ("STAFF".equalsIgnoreCase(user.getRole())) {
+            String approvalStatus = user.getApprovalStatus();
 
-            if (user.getFullName() == null || user.getFullName().isBlank()) {
-                user.setFullName(request.getFullName());
-                userRepository.save(user);
+            if (!"APPROVED".equalsIgnoreCase(approvalStatus)) {
+                if ("PENDING".equalsIgnoreCase(approvalStatus)) {
+                    throw new RuntimeException("Your staff account is still pending admin approval.");
+                }
+
+                if ("REJECTED".equalsIgnoreCase(approvalStatus)) {
+                    throw new RuntimeException("Your staff registration was rejected by the admin.");
+                }
+
+                throw new RuntimeException("Your staff account is not approved yet.");
             }
-
-            return user;
         }
 
-        User newUser = UserFactory.createGoogleUser(
-                request.getEmail(),
-                request.getFullName()
-        );
-
-        return userRepository.save(newUser);
+        return user;
     }
 }

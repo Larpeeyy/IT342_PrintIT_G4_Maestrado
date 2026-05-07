@@ -6,8 +6,6 @@ import com.printit.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class EmailAuthStrategy implements AuthStrategy {
 
@@ -21,16 +19,27 @@ public class EmailAuthStrategy implements AuthStrategy {
 
     @Override
     public User authenticate(AuthRequest request) {
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("User not found.");
-        }
-
-        User user = userOpt.get();
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Account not found."));
 
         if (user.getPassword() == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password.");
+        }
+
+        if ("STAFF".equalsIgnoreCase(user.getRole())) {
+            String approvalStatus = user.getApprovalStatus();
+
+            if (!"APPROVED".equalsIgnoreCase(approvalStatus)) {
+                if ("PENDING".equalsIgnoreCase(approvalStatus)) {
+                    throw new RuntimeException("Your staff account is still pending admin approval.");
+                }
+
+                if ("REJECTED".equalsIgnoreCase(approvalStatus)) {
+                    throw new RuntimeException("Your staff registration was rejected by the admin.");
+                }
+
+                throw new RuntimeException("Your staff account is not approved yet.");
+            }
         }
 
         return user;
