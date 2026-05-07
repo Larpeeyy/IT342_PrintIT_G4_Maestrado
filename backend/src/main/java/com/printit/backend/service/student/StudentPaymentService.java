@@ -54,7 +54,6 @@ public class StudentPaymentService {
                 payment.getProvider(),
                 payment.getStatus(),
                 payment.getAmount(),
-                payment.getCurrency(),
                 payment.getCreatedAt()
         );
     }

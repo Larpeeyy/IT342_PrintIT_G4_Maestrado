@@ -13,33 +13,24 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "payment_code", nullable = false, unique = true)
+    @Column(name = "payment_code", unique = true)
     private String paymentCode;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private PrintOrder order;
 
-    @Column(nullable = false)
+    @Column(name = "provider")
     private String provider;
 
-    @Column(name = "provider_payment_id")
-    private String providerPaymentId;
-
-    @Column(nullable = false)
-    private BigDecimal amount;
-
-    @Column(nullable = false)
-    private String currency;
-
-    @Column(nullable = false)
+    @Column(name = "status")
     private String status;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "amount", precision = 12, scale = 2)
+    private BigDecimal amount;
 
-    public Payment() {
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -69,12 +60,12 @@ public class Payment {
         this.provider = provider;
     }
 
-    public String getProviderPaymentId() {
-        return providerPaymentId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setProviderPaymentId(String providerPaymentId) {
-        this.providerPaymentId = providerPaymentId;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public BigDecimal getAmount() {
@@ -85,27 +76,24 @@ public class Payment {
         this.amount = amount;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (status == null || status.isBlank()) {
+            status = "Pending";
+        }
+        if (provider == null || provider.isBlank()) {
+            provider = "Manual";
+        }
     }
 }

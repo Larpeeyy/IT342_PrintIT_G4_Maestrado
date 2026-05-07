@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronDown, LogOut, Settings } from "lucide-react";
 import { changePassword, getProfile, updateProfile } from "../services/api";
 import { supabase } from "../services/supabaseClient";
+import NotificationBell from "../components/NotificationBell";
+import StudentTopbar from "../components/StudentTopbar";
 import "./ProfileSettings.css";
 
 function ProfileSettings() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const profileMenuRef = useRef(null);
 
   const storedUser = useMemo(() => {
     try {
@@ -44,6 +48,7 @@ function ProfileSettings() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const initials = useMemo(() => {
     if (!profile.fullName) return "PI";
@@ -73,9 +78,34 @@ function ProfileSettings() {
     return profile.studentId || "Not set";
   }, [profile.role, profile.staffId, profile.studentId]);
 
+  const goDashboard = () => {
+    if (profile.role === "ADMIN") {
+      navigate("/admin/dashboard");
+      return;
+    }
+
+    if (profile.role === "STAFF") {
+      navigate("/staff/dashboard");
+      return;
+    }
+
+    navigate("/student/home");
+  };
+
   useEffect(() => {
     setImageLoadError(false);
   }, [profile.profileImageUrl]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -111,7 +141,12 @@ function ProfileSettings() {
         );
       } catch (error) {
         console.error("Failed to load profile:", error);
-        alert("Failed to load profile.");
+        alert(
+          error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            "Failed to load profile."
+        );
       } finally {
         setLoadingProfile(false);
       }
@@ -207,7 +242,12 @@ function ProfileSettings() {
       alert("Photo uploaded successfully.");
     } catch (error) {
       console.error("Photo upload failed:", error);
-      alert(error?.message || "Failed to upload photo.");
+      alert(
+        error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          error?.message ||
+          "Failed to upload photo."
+      );
     } finally {
       setUploadingPhoto(false);
       e.target.value = "";
@@ -254,11 +294,12 @@ function ProfileSettings() {
       alert("Profile updated successfully.");
     } catch (error) {
       console.error("Profile update failed:", error);
-      const message =
+      alert(
         error?.response?.data?.message ||
-        error?.response?.data ||
-        "Failed to update profile.";
-      alert(message);
+          error?.response?.data?.error ||
+          error?.message ||
+          "Failed to update profile."
+      );
     } finally {
       setSavingProfile(false);
     }
@@ -305,11 +346,12 @@ function ProfileSettings() {
       alert("Password updated successfully.");
     } catch (error) {
       console.error("Password update failed:", error);
-      const message =
+      alert(
         error?.response?.data?.message ||
-        error?.response?.data ||
-        "Failed to update password.";
-      alert(message);
+          error?.response?.data?.error ||
+          error?.message ||
+          "Failed to update password."
+      );
     } finally {
       setSavingPassword(false);
     }
@@ -323,10 +365,28 @@ function ProfileSettings() {
     navigate("/login");
   };
 
-  const goDashboard = () => {
-    if (profile.role === "ADMIN") navigate("/admin/dashboard");
-    else if (profile.role === "STAFF") navigate("/staff/dashboard");
-    else navigate("/student/home");
+  const renderRoleNav = () => {
+    if (profile.role === "ADMIN") {
+      return (
+        <nav className="profile-top-nav">
+          <button onClick={() => navigate("/admin/dashboard")}>Dashboard</button>
+          <button onClick={() => navigate("/admin/users")}>Users</button>
+          <button onClick={() => navigate("/admin/payments")}>Payments</button>
+          <button onClick={() => navigate("/admin/orders")}>Orders</button>
+        </nav>
+      );
+    }
+
+    if (profile.role === "STAFF") {
+      return (
+        <nav className="profile-top-nav">
+          <button onClick={() => navigate("/staff/dashboard")}>Dashboard</button>
+          <button onClick={() => navigate("/staff/orders")}>Orders Queue</button>
+        </nav>
+      );
+    }
+
+    return null;
   };
 
   if (loadingProfile) {
@@ -341,50 +401,68 @@ function ProfileSettings() {
 
   return (
     <div className="profile-settings-page">
-      <header className="profile-top-navbar">
-        <div className="profile-top-brand" onClick={goDashboard}>
-          <div className="profile-top-logo"></div>
-          <div className="profile-top-brand-text">PrintIT</div>
-        </div>
+      {profile.role === "STUDENT" ? (
+        <StudentTopbar activeTab="" />
+      ) : (
+        <header className="profile-top-navbar">
+          <div className="profile-top-brand" onClick={goDashboard}>
+            <div className="profile-top-logo"></div>
+            <div className="profile-top-brand-text">PrintIT</div>
+          </div>
 
-        <nav className="profile-top-nav">
-          <button onClick={goDashboard}>Dashboard</button>
+          {renderRoleNav()}
 
-          {profile.role === "STUDENT" && (
-            <>
-              <button onClick={() => navigate("/student/new-order")}>+ New Order</button>
-              <button onClick={() => navigate("/student/orders")}>Orders</button>
-              <button onClick={() => navigate("/student/payments")}>Payments</button>
-            </>
-          )}
+          <div className="profile-top-actions">
+            <NotificationBell />
 
-          {profile.role !== "STUDENT" && (
-            <button className="active" onClick={() => navigate("/profile")}>
-              Profile Settings
-            </button>
-          )}
-        </nav>
+            <div className="profile-menu-wrap" ref={profileMenuRef}>
+              <button
+                className="profile-top-avatar"
+                type="button"
+                onClick={() => setProfileMenuOpen((prev) => !prev)}
+                title="Profile Menu"
+              >
+                {profile.profileImageUrl && !imageLoadError ? (
+                  <img
+                    src={profile.profileImageUrl}
+                    alt="Profile"
+                    className="profile-top-avatar-image"
+                    onError={() => setImageLoadError(true)}
+                  />
+                ) : (
+                  <span>{initials}</span>
+                )}
+                <ChevronDown size={14} />
+              </button>
 
-        <div className="profile-top-actions">
-          <button
-            className="profile-top-avatar"
-            type="button"
-            onClick={() => navigate("/profile")}
-            title="Profile Settings"
-          >
-            {profile.profileImageUrl && !imageLoadError ? (
-              <img
-                src={profile.profileImageUrl}
-                alt="Profile"
-                className="profile-top-avatar-image"
-                onError={() => setImageLoadError(true)}
-              />
-            ) : (
-              initials
-            )}
-          </button>
-        </div>
-      </header>
+              {profileMenuOpen && (
+                <div className="profile-menu-dropdown">
+                  <button
+                    className="profile-menu-action-btn"
+                    type="button"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      navigate("/profile");
+                    }}
+                  >
+                    <Settings size={16} />
+                    <span>Profile Settings</span>
+                  </button>
+
+                  <button
+                    className="profile-menu-logout-btn"
+                    type="button"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+      )}
 
       <div className="profile-settings-shell">
         <div className="profile-settings-topbar">
@@ -592,11 +670,7 @@ function ProfileSettings() {
                 {savingPassword ? "Updating..." : "🔒 Update Password"}
               </button>
 
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={handleLogout}
-              >
+              <button type="button" className="cancel-btn" onClick={handleLogout}>
                 Logout
               </button>
             </div>

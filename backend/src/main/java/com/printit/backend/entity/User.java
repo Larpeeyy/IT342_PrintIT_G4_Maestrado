@@ -34,6 +34,9 @@ public class User {
     @Column(name = "profile_image_url", columnDefinition = "text")
     private String profileImageUrl;
 
+    @Column(name = "approval_status")
+    private String approvalStatus;
+
     public User() {
     }
 
@@ -110,5 +113,13 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 }

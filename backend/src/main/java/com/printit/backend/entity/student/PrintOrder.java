@@ -14,36 +14,33 @@ public class PrintOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_code", nullable = false, unique = true)
+    @Column(name = "order_code", unique = true)
     private String orderCode;
 
-    @Column(name = "file_name", nullable = false)
+    @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "paper_size", nullable = false)
+    @Column(name = "paper_size")
     private String paperSize;
 
-    @Column(name = "color_mode", nullable = false)
+    @Column(name = "color_mode")
     private String colorMode;
 
-    @Column(nullable = false)
+    @Column(name = "copies")
     private Integer copies;
 
-    @Column(nullable = false)
+    @Column(name = "status")
     private String status;
 
-    @Column(name = "total_amount", nullable = false)
+    @Column(name = "total_amount", precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_user_id", nullable = false)
+    @JoinColumn(name = "student_id")
     private User student;
-
-    public PrintOrder() {
-    }
 
     public Long getId() {
         return id;
@@ -119,5 +116,15 @@ public class PrintOrder {
 
     public void setStudent(User student) {
         this.student = student;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (status == null || status.isBlank()) {
+            status = "Pending";
+        }
     }
 }

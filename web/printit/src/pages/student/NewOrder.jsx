@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
+import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPrintOrder } from "../../services/api";
+import StudentTopbar from "../../components/StudentTopbar";
 import "./NewOrder.css";
 
 function NewOrder() {
@@ -14,32 +16,21 @@ function NewOrder() {
     }
   }, []);
 
-  const [currentStep, setCurrentStep] = useState(1);
   const [selectedFile, setSelectedFile] = useState(null);
   const [paperSize, setPaperSize] = useState("A4");
   const [colorMode, setColorMode] = useState("Black & White");
   const [copies, setCopies] = useState(1);
   const [loading, setLoading] = useState(false);
-
-  const highlightRed = "#9b2c3a";
-
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "JD";
+  const [currentStep, setCurrentStep] = useState(1);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const fileName = file.name.toLowerCase();
-    const isValidType = fileName.endsWith(".pdf") || fileName.endsWith(".docx");
+    const lowerName = file.name.toLowerCase();
+    const valid = lowerName.endsWith(".pdf") || lowerName.endsWith(".docx");
 
-    if (!isValidType) {
+    if (!valid) {
       alert("Only PDF and DOCX files are allowed.");
       e.target.value = "";
       return;
@@ -48,33 +39,22 @@ function NewOrder() {
     setSelectedFile(file);
   };
 
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-  };
-
-  const handleNext = () => {
-    if (currentStep === 1) {
-      if (!selectedFile) {
-        alert("Please upload a PDF or DOCX file first.");
-        return;
-      }
-      setCurrentStep(2);
+  const handleNextStep = () => {
+    if (currentStep === 1 && !selectedFile) {
+      alert("Please upload a PDF or DOCX file first.");
       return;
     }
 
-    if (currentStep === 2) {
-      if (!copies || Number(copies) < 1) {
-        alert("Copies must be at least 1.");
-        return;
-      }
-      setCurrentStep(3);
+    if (currentStep === 2 && (!copies || Number(copies) < 1)) {
+      alert("Copies must be at least 1.");
+      return;
     }
+
+    setCurrentStep((prev) => Math.min(prev + 1, 3));
   };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep((prev) => prev - 1);
-    }
+  const handlePreviousStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
   const handleSubmit = async () => {
@@ -86,11 +66,6 @@ function NewOrder() {
 
     if (!selectedFile) {
       alert("Please upload a PDF or DOCX file first.");
-      return;
-    }
-
-    if (!copies || Number(copies) < 1) {
-      alert("Copies must be at least 1.");
       return;
     }
 
@@ -109,256 +84,47 @@ function NewOrder() {
       navigate("/student/orders");
     } catch (error) {
       console.error("Create order error:", error);
-
-      let message = "Failed to submit order.";
-
-      if (typeof error?.response?.data === "string") {
-        if (error.response.data.includes("Cannot GET /login")) {
-          message =
-            "Backend request was redirected to login. Check SecurityConfig and restart your backend.";
-        } else {
-          message = error.response.data;
-        }
-      } else {
-        message =
-          error?.response?.data?.message ||
+      alert(
+        error?.response?.data?.message ||
           error?.response?.data?.error ||
-          "Failed to submit order.";
-      }
-
-      alert(message);
+          error?.message ||
+          "Failed to submit order."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const getStepCircleContent = (step) => {
-    if (currentStep > step) return "✓";
-    return step;
+  const getStepState = (step) => {
+    if (step < currentStep) return "done";
+    if (step === currentStep) return "active";
+    return "idle";
   };
 
-  const getStepCircleClass = (step) => {
-    if (currentStep > step) return "step-number completed";
-    if (currentStep === step) return "step-number active";
-    return "step-number light";
+  const renderStepCircle = (step) => {
+    const state = getStepState(step);
+
+    if (state === "done") {
+      return (
+        <div className="step-number done">
+          <Check size={16} />
+        </div>
+      );
+    }
+
+    return (
+      <div className={`step-number ${state === "active" ? "active" : "light"}`}>
+        {step}
+      </div>
+    );
   };
 
-  const getStepLineClass = (step) => {
-    return currentStep > step ? "step-line completed" : "step-line";
-  };
-
-  const renderStepOne = () => (
-    <section className="upload-card">
-      <div className="step-card-header">
-        <h3>Upload Your Documents</h3>
-        <p>Drag and drop PDF files or click to browse</p>
-      </div>
-
-      <label className="upload-box modern-upload-box">
-        <input type="file" accept=".pdf,.docx" onChange={handleFileChange} hidden />
-        <div className="upload-icon">⇪</div>
-        <h4>Drop your PDF or DOCX files here</h4>
-        <span>or click to browse from your computer</span>
-        <small>Only PDF and DOCX files are accepted</small>
-      </label>
-
-      {selectedFile && (
-        <div className="uploaded-files-wrap">
-          <label className="uploaded-files-label">Uploaded Files (1)</label>
-
-          <div className="uploaded-file-item">
-            <div className="uploaded-file-left">
-              <div className="uploaded-file-icon">📄</div>
-              <div>
-                <h5>{selectedFile.name}</h5>
-                <p>Ready for printing</p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="remove-file-btn"
-              onClick={handleRemoveFile}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-
-  const renderStepTwo = () => (
-    <section className="upload-card">
-      <div className="step-card-header">
-        <h3>Print Settings</h3>
-        <p>Configure how you want your documents printed</p>
-      </div>
-
-      <div className="settings-grid">
-        <div className="settings-block">
-          <label>Paper Size</label>
-          <div className="option-row">
-            {["A4", "Letter", "Legal"].map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={`option-pill ${paperSize === size ? "selected" : ""}`}
-                onClick={() => setPaperSize(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="settings-block">
-          <label>Color Mode</label>
-          <div className="option-row">
-            <button
-              type="button"
-              className={`option-pill option-pill-large ${
-                colorMode === "Black & White" ? "selected" : ""
-              }`}
-              onClick={() => setColorMode("Black & White")}
-            >
-              <strong>Black & White</strong>
-              <span>P2/page</span>
-            </button>
-
-            <button
-              type="button"
-              className={`option-pill option-pill-large ${
-                colorMode === "Color" ? "selected" : ""
-              }`}
-              onClick={() => setColorMode("Color")}
-            >
-              <strong>Color</strong>
-              <span>P5/page</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="settings-block settings-block-full">
-          <label>Number of Copies</label>
-          <input
-            className="modern-input"
-            type="number"
-            min="1"
-            value={copies}
-            onChange={(e) => setCopies(e.target.value)}
-          />
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderStepThree = () => (
-    <section className="upload-card">
-      <div className="step-card-header">
-        <h3>Review Your Order</h3>
-        <p>Please confirm the details before submitting</p>
-      </div>
-
-      <div className="review-section">
-        <label className="review-label">Files (1)</label>
-
-        <div className="review-file-box">
-          <div className="review-file-left">
-            <div className="review-file-icon">📄</div>
-            <div>
-              <h5>{selectedFile?.name}</h5>
-              <p>1 file</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="review-section">
-        <label className="review-label">Print Settings</label>
-
-        <div className="review-settings-box">
-          <div>
-            <span>Paper Size</span>
-            <strong>{paperSize.toUpperCase()}</strong>
-          </div>
-          <div>
-            <span>Color Mode</span>
-            <strong>{colorMode}</strong>
-          </div>
-          <div>
-            <span>Copies</span>
-            <strong>{copies}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div className="review-section">
-        <div className="price-summary-box">
-          <div className="price-summary-header">Price Summary</div>
-
-          <div className="price-row">
-            <span>
-              {colorMode === "Black & White" ? "P2/page" : "P5/page"} × {copies} copie(s)
-            </span>
-            <strong>
-              P{" "}
-              {(
-                (colorMode === "Black & White" ? 2 : 5) *
-                Number(copies || 1)
-              ).toFixed(2)}
-            </strong>
-          </div>
-
-          <div className="price-row total">
-            <span>Total</span>
-            <strong>
-              P{" "}
-              {(
-                (colorMode === "Black & White" ? 2 : 5) *
-                Number(copies || 1)
-              ).toFixed(2)}
-            </strong>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  const total =
+    (colorMode === "Color" ? 5 : 2) * Number(copies || 0);
 
   return (
     <div className="new-order-page">
-      <header className="new-order-navbar">
-        <div className="new-order-brand" onClick={() => navigate("/student/home")}>
-          <div className="new-order-logo"></div>
-          <div className="new-order-brand-text">PrintIT</div>
-        </div>
-
-        <nav className="new-order-nav">
-          <button onClick={() => navigate("/student/home")}>Dashboard</button>
-          <button className="active" onClick={() => navigate("/student/new-order")}>
-            + New Order
-          </button>
-          <button onClick={() => navigate("/student/orders")}>Orders</button>
-          <button onClick={() => navigate("/student/payments")}>Payments</button>
-        </nav>
-
-        <button
-          className="new-order-user new-order-user-btn"
-          type="button"
-          onClick={() => navigate("/profile")}
-          title="Profile Settings"
-        >
-          {user?.profileImageUrl ? (
-            <img
-              src={user.profileImageUrl}
-              alt="Profile"
-              className="new-order-user-image"
-            />
-          ) : (
-            initials
-          )}
-        </button>
-      </header>
+      <StudentTopbar activeTab="new-order" />
 
       <main className="new-order-content">
         <h1>New Print Order</h1>
@@ -366,27 +132,27 @@ function NewOrder() {
 
         <div className="new-order-steps">
           <div className="step-item">
-            <div className={getStepCircleClass(1)}>{getStepCircleContent(1)}</div>
+            {renderStepCircle(1)}
             <div>
               <strong>Upload Files</strong>
               <span>Add your documents</span>
             </div>
           </div>
 
-          <div className={getStepLineClass(1)} />
+          <div className={`step-line ${currentStep > 1 ? "done" : ""}`} />
 
           <div className="step-item">
-            <div className={getStepCircleClass(2)}>{getStepCircleContent(2)}</div>
+            {renderStepCircle(2)}
             <div>
               <strong>Print Settings</strong>
               <span>Configure options</span>
             </div>
           </div>
 
-          <div className={getStepLineClass(2)} />
+          <div className={`step-line ${currentStep > 2 ? "done" : ""}`} />
 
           <div className="step-item">
-            <div className={getStepCircleClass(3)}>{getStepCircleContent(3)}</div>
+            {renderStepCircle(3)}
             <div>
               <strong>Review & Submit</strong>
               <span>Confirm your order</span>
@@ -394,34 +160,175 @@ function NewOrder() {
           </div>
         </div>
 
-        {currentStep === 1 && renderStepOne()}
-        {currentStep === 2 && renderStepTwo()}
-        {currentStep === 3 && renderStepThree()}
+        {currentStep === 1 && (
+          <section className="upload-card">
+            <h3>Upload Your Documents</h3>
+            <p>Drag and drop PDF files or click to browse</p>
 
-        <div className={`new-order-footer ${currentStep === 1 ? "step-one-footer" : ""}`}>
-          {currentStep > 1 ? (
-            <button className="ghost-btn" onClick={handlePrevious}>
-              ← Previous
-            </button>
-          ) : (
-            <div></div>
-          )}
+            <label className="upload-box">
+              <input
+                type="file"
+                accept=".pdf,.docx"
+                onChange={handleFileChange}
+                hidden
+              />
+              <div className="upload-icon">⇪</div>
+              <h4>{selectedFile ? selectedFile.name : "Drop your PDF or DOCX files here"}</h4>
+              <span>
+                {selectedFile
+                  ? "File selected successfully"
+                  : "or click to browse from your computer"}
+              </span>
+              <small>Only PDF and DOCX files are accepted</small>
+            </label>
 
-          {currentStep < 3 ? (
-            <button className="primary-btn submit-order-btn" onClick={handleNext}>
-              Next →
-            </button>
-          ) : (
-            <button
-              className="primary-btn submit-order-btn"
-              onClick={handleSubmit}
-              disabled={loading}
-              style={{ background: highlightRed }}
-            >
-              {loading ? "Submitting..." : "👜 Submit Order"}
-            </button>
-          )}
-        </div>
+            <div className="new-order-footer">
+              <button className="ghost-btn" onClick={handlePreviousStep} disabled>
+                ← Previous
+              </button>
+              <button className="primary-btn" onClick={handleNextStep}>
+                Next →
+              </button>
+            </div>
+          </section>
+        )}
+
+        {currentStep === 2 && (
+          <section className="upload-card">
+            <h3>Print Settings</h3>
+            <p>Configure how you want your documents printed</p>
+
+            <div style={{ marginTop: "20px", display: "grid", gap: "14px" }}>
+              <div>
+                <label>Paper Size</label>
+                <select
+                  value={paperSize}
+                  onChange={(e) => setPaperSize(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "44px",
+                    marginTop: "6px",
+                    borderRadius: "12px",
+                    border: "1px solid #ddd",
+                    padding: "0 12px",
+                  }}
+                >
+                  <option value="A4">A4</option>
+                  <option value="Letter">Letter</option>
+                  <option value="Legal">Legal</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Color Option</label>
+                <div style={{ display: "flex", gap: "12px", marginTop: "6px" }}>
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    style={{
+                      background: colorMode === "Black & White" ? "#9b2c3a" : "#eee",
+                      color: colorMode === "Black & White" ? "#fff" : "#111",
+                      flex: 1,
+                    }}
+                    onClick={() => setColorMode("Black & White")}
+                  >
+                    Black & White
+                  </button>
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    style={{
+                      background: colorMode === "Color" ? "#9b2c3a" : "#eee",
+                      color: colorMode === "Color" ? "#fff" : "#111",
+                      flex: 1,
+                    }}
+                    onClick={() => setColorMode("Color")}
+                  >
+                    Color
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label>Number of Copies</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={copies}
+                  onChange={(e) => setCopies(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "44px",
+                    marginTop: "6px",
+                    borderRadius: "12px",
+                    border: "1px solid #ddd",
+                    padding: "0 12px",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="new-order-footer">
+              <button className="ghost-btn" onClick={handlePreviousStep}>
+                ← Previous
+              </button>
+              <button className="primary-btn" onClick={handleNextStep}>
+                Next →
+              </button>
+            </div>
+          </section>
+        )}
+
+        {currentStep === 3 && (
+          <section className="upload-card">
+            <h3>Review Your Order</h3>
+            <p>Please confirm the details before submitting</p>
+
+            <div className="review-block">
+              <strong>Files (1)</strong>
+              <div className="review-file">{selectedFile?.name}</div>
+            </div>
+
+            <div className="review-block">
+              <strong>Print Settings</strong>
+              <div className="review-grid">
+                <div>
+                  <span>Paper Size</span>
+                  <strong>{paperSize}</strong>
+                </div>
+                <div>
+                  <span>Color Mode</span>
+                  <strong>{colorMode}</strong>
+                </div>
+                <div>
+                  <span>Copies</span>
+                  <strong>{copies}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="review-block">
+              <strong>Price Summary</strong>
+              <div className="review-price-row">
+                <span>{colorMode === "Color" ? "P5/page" : "P2/page"} × {copies} copie(s)</span>
+                <strong>P {total}.00</strong>
+              </div>
+              <div className="review-price-row total">
+                <span>Total</span>
+                <strong>P {total}.00</strong>
+              </div>
+            </div>
+
+            <div className="new-order-footer">
+              <button className="ghost-btn" onClick={handlePreviousStep}>
+                ← Previous
+              </button>
+              <button className="primary-btn" onClick={handleSubmit} disabled={loading}>
+                {loading ? "Submitting..." : "Submit Order"}
+              </button>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

@@ -8,6 +8,7 @@ import com.printit.backend.entity.student.PrintOrder;
 import com.printit.backend.repository.UserRepository;
 import com.printit.backend.repository.student.PaymentRepository;
 import com.printit.backend.repository.student.PrintOrderRepository;
+import com.printit.backend.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,15 +23,18 @@ public class StudentOrderService {
     private final UserRepository userRepository;
     private final PrintOrderRepository printOrderRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationService notificationService;
 
     public StudentOrderService(
             UserRepository userRepository,
             PrintOrderRepository printOrderRepository,
-            PaymentRepository paymentRepository
+            PaymentRepository paymentRepository,
+            NotificationService notificationService
     ) {
         this.userRepository = userRepository;
         this.printOrderRepository = printOrderRepository;
         this.paymentRepository = paymentRepository;
+        this.notificationService = notificationService;
     }
 
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -55,13 +59,28 @@ public class StudentOrderService {
         payment.setPaymentCode(generatePaymentCode());
         payment.setOrder(savedOrder);
         payment.setProvider("Sandbox");
-        payment.setProviderPaymentId(null);
         payment.setAmount(savedOrder.getTotalAmount());
-        payment.setCurrency("PHP");
         payment.setStatus("Pending");
         payment.setCreatedAt(LocalDateTime.now());
 
         paymentRepository.save(payment);
+
+        notificationService.createNotification(
+                student,
+                "Order Submitted",
+                "Your print order " + savedOrder.getOrderCode() + " was submitted successfully.",
+                "ORDER"
+        );
+
+        List<User> staffUsers = userRepository.findByRoleAndApprovalStatus("STAFF", "APPROVED");
+        for (User staff : staffUsers) {
+            notificationService.createNotification(
+                    staff,
+                    "New Print Order",
+                    "A new order " + savedOrder.getOrderCode() + " was submitted by " + student.getFullName() + ".",
+                    "ORDER"
+            );
+        }
 
         return mapToOrderResponse(savedOrder);
     }
@@ -122,6 +141,31 @@ public class StudentOrderService {
         return user;
     }
 
+    private BigDecimal calculateAmount(String paperSize, String colorMode, Integer copies) {
+        BigDecimal base;
+
+        switch (paperSize.toUpperCase(Locale.ROOT)) {
+            case "LETTER":
+                base = BigDecimal.valueOf(5);
+                break;
+            case "LEGAL":
+                base = BigDecimal.valueOf(6);
+                break;
+            default:
+                base = BigDecimal.valueOf(4);
+                break;
+        }
+
+        BigDecimal colorExtra;
+        if ("Color".equalsIgnoreCase(colorMode)) {
+            colorExtra = BigDecimal.valueOf(3);
+        } else {
+            colorExtra = BigDecimal.ZERO;
+        }
+
+        return base.add(colorExtra).multiply(BigDecimal.valueOf(copies));
+    }
+
     private String normalizeColorMode(String colorMode) {
         if ("Color".equalsIgnoreCase(colorMode)) {
             return "Color";
@@ -129,28 +173,14 @@ public class StudentOrderService {
         return "Black & White";
     }
 
-    private BigDecimal calculateAmount(String paperSize, String colorMode, Integer copies) {
-        BigDecimal base = switch (paperSize.toUpperCase(Locale.ROOT)) {
-            case "LETTER" -> BigDecimal.valueOf(5);
-            case "LEGAL" -> BigDecimal.valueOf(6);
-            default -> BigDecimal.valueOf(4);
-        };
-
-        BigDecimal colorExtra = "Color".equalsIgnoreCase(colorMode)
-                ? BigDecimal.valueOf(3)
-                : BigDecimal.ZERO;
-
-        return base.add(colorExtra).multiply(BigDecimal.valueOf(copies));
-    }
-
     private String generateOrderCode() {
-        long nextValue = printOrderRepository.count() + 1;
-        return String.format("ORD-2026-%03d", nextValue);
+        long count = printOrderRepository.count() + 1;
+        return String.format("ORD-%d-%03d", LocalDateTime.now().getYear(), count);
     }
 
     private String generatePaymentCode() {
-        long nextValue = paymentRepository.count() + 1;
-        return String.format("PAY-2026-%03d", nextValue);
+        long count = paymentRepository.count() + 1;
+        return String.format("PAY-%d-%03d", LocalDateTime.now().getYear(), count);
     }
 
     private OrderResponse mapToOrderResponse(PrintOrder order) {

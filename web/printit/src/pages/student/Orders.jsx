@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getStudentOrders } from "../../services/api";
+import StudentTopbar from "../../components/StudentTopbar";
 import "./Orders.css";
 
 function Orders() {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [orders, setOrders] = useState([]);
-
   const user = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("printit_user")) || {};
@@ -17,14 +12,9 @@ function Orders() {
     }
   }, []);
 
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "JD";
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All Status");
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -59,8 +49,8 @@ function Orders() {
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.orderCode.toLowerCase().includes(search.toLowerCase()) ||
-      order.fileName.toLowerCase().includes(search.toLowerCase());
+      (order.orderCode || "").toLowerCase().includes(search.toLowerCase()) ||
+      (order.fileName || "").toLowerCase().includes(search.toLowerCase());
 
     const matchesStatus =
       statusFilter === "All Status" || order.status === statusFilter;
@@ -70,38 +60,7 @@ function Orders() {
 
   return (
     <div className="orders-page">
-      <header className="orders-navbar">
-        <div className="orders-brand" onClick={() => navigate("/student/home")}>
-          <div className="orders-logo"></div>
-          <div className="orders-brand-text">PrintIT</div>
-        </div>
-
-        <nav className="orders-nav">
-          <button onClick={() => navigate("/student/home")}>Dashboard</button>
-          <button onClick={() => navigate("/student/new-order")}>+ New Order</button>
-          <button className="active" onClick={() => navigate("/student/orders")}>
-            Orders
-          </button>
-          <button onClick={() => navigate("/student/payments")}>Payments</button>
-        </nav>
-
-        <button
-          className="orders-user orders-user-btn"
-          type="button"
-          onClick={() => navigate("/profile")}
-          title="Profile Settings"
-        >
-          {user?.profileImageUrl ? (
-            <img
-              src={user.profileImageUrl}
-              alt="Profile"
-              className="orders-user-image"
-            />
-          ) : (
-            initials
-          )}
-        </button>
-      </header>
+      <StudentTopbar activeTab="orders" />
 
       <main className="orders-content">
         <h1>Order History</h1>
@@ -142,7 +101,6 @@ function Orders() {
                 <th>Status</th>
                 <th>Date</th>
                 <th>Amount</th>
-                <th>Actions</th>
               </tr>
             </thead>
 
@@ -160,8 +118,7 @@ function Orders() {
                     </span>
                   </td>
                   <td>{formatDate(order.createdAt)}</td>
-                  <td>P {Number(order.totalAmount).toFixed(2)}</td>
-                  <td className="orders-actions"></td>
+                  <td>P {Number(order.totalAmount || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

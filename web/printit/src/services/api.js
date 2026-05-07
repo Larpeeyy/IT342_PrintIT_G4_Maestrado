@@ -31,4 +31,49 @@ export const updateProfile = (data) =>
 export const changePassword = (data) =>
   api.put("/api/profile/change-password", data);
 
+export const getAdminDashboard = () =>
+  api.get("/api/admin/dashboard");
+
+export const approveStaffRequest = (userId) =>
+  api.put(`/api/admin/staff/${userId}/approve`);
+
+export const rejectStaffRequest = (userId) =>
+  api.put(`/api/admin/staff/${userId}/reject`);
+
+export const getAdminUsers = () =>
+  api.get("/api/admin/users");
+
+export const getAdminOrders = () =>
+  api.get("/api/admin/orders");
+
+export const getAdminPayments = () =>
+  api.get("/api/admin/payments");
+
+export const getStaffPendingPayments = () =>
+  api.get("/api/staff/payments/pending");
+
+export const markStaffPaymentAsPaid = (paymentId) =>
+  api.put(`/api/staff/payments/${paymentId}/mark-paid`);
+
+export const getStaffDashboard = () =>
+  api.get("/api/staff/dashboard");
+
+export const getStaffOrders = () =>
+  api.get("/api/staff/orders");
+
+export const getStaffOrderById = (orderId) =>
+  api.get(`/api/staff/orders/${orderId}`);
+
+export const updateStaffOrderStatus = (orderId, data) =>
+  api.put(`/api/staff/orders/${orderId}/status`, data);
+
+export const getNotifications = (email) =>
+  api.get("/api/notifications", { params: { email } });
+
+export const getUnreadNotificationCount = (email) =>
+  api.get("/api/notifications/unread-count", { params: { email } });
+
+export const markNotificationAsRead = (notificationId) =>
+  api.put(`/api/notifications/${notificationId}/read`);
+
 export default api;

@@ -8,6 +8,7 @@ import com.printit.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,17 +18,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailAuthStrategy emailAuthStrategy;
     private final GoogleAuthStrategy googleAuthStrategy;
+    private final NotificationService notificationService;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             EmailAuthStrategy emailAuthStrategy,
-            GoogleAuthStrategy googleAuthStrategy
+            GoogleAuthStrategy googleAuthStrategy,
+            NotificationService notificationService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailAuthStrategy = emailAuthStrategy;
         this.googleAuthStrategy = googleAuthStrategy;
+        this.notificationService = notificationService;
     }
 
     public User register(AuthRequest request) {
@@ -46,17 +50,39 @@ public class AuthService {
         if ("STUDENT".equalsIgnoreCase(request.getRole())) {
             user.setStudentId(request.getStudentId());
             user.setStaffId(null);
+            user.setApprovalStatus("APPROVED");
         } else if ("STAFF".equalsIgnoreCase(request.getRole())) {
             user.setStaffId(request.getStaffId());
             user.setStudentId(null);
+            user.setApprovalStatus("PENDING");
+        } else if ("ADMIN".equalsIgnoreCase(request.getRole())) {
+            user.setStudentId(null);
+            user.setStaffId(null);
+            user.setApprovalStatus("APPROVED");
         } else {
             user.setStudentId(null);
             user.setStaffId(null);
+            user.setApprovalStatus("APPROVED");
         }
+
         user.setUsername(request.getEmail().split("@")[0]);
         user.setProfileImageUrl(null);
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        if ("STAFF".equalsIgnoreCase(request.getRole())) {
+            List<User> admins = userRepository.findByRole("ADMIN");
+            for (User admin : admins) {
+                notificationService.createNotification(
+                        admin,
+                        "New Staff Approval Request",
+                        request.getFullName() + " registered as staff and is waiting for approval.",
+                        "STAFF_APPROVAL"
+                );
+            }
+        }
+
+        return savedUser;
     }
 
     public User login(String email, String password) {

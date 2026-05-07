@@ -5,7 +5,13 @@ import OAuthSuccess from "./pages/OAuthSuccess";
 import ProfileSettings from "./pages/ProfileSettings";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPayments from "./pages/admin/AdminPayments";
+
 import StaffDashboard from "./pages/staff/StaffDashboard";
+import StaffOrdersQueue from "./pages/staff/StaffOrdersQueue";
+import StaffViewOrder from "./pages/staff/StaffViewOrder";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
 import NewOrder from "./pages/student/NewOrder";
@@ -23,7 +29,13 @@ function App() {
         <Route path="/profile" element={<ProfileSettings />} />
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
+        <Route path="/admin/payments" element={<AdminPayments />} />
+
         <Route path="/staff/dashboard" element={<StaffDashboard />} />
+        <Route path="/staff/orders" element={<StaffOrdersQueue />} />
+        <Route path="/staff/orders/:orderId" element={<StaffViewOrder />} />
 
         <Route path="/student/home" element={<StudentDashboard />} />
         <Route path="/student/new-order" element={<NewOrder />} />

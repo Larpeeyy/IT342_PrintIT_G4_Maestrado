@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getStudentPayments } from "../../services/api";
+import StudentTopbar from "../../components/StudentTopbar";
 import "./Payments.css";
 
 function Payments() {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [payments, setPayments] = useState([]);
-
   const user = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("printit_user")) || {};
@@ -17,14 +12,9 @@ function Payments() {
     }
   }, []);
 
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "JD";
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All Status");
+  const [payments, setPayments] = useState([]);
 
   useEffect(() => {
     const loadPayments = async () => {
@@ -42,7 +32,7 @@ function Payments() {
 
   const filteredPayments = payments.filter((payment) => {
     const searchTarget =
-      `${payment.paymentCode} ${payment.orderCode} ${payment.fileName}`.toLowerCase();
+      `${payment.paymentCode || ""} ${payment.orderCode || ""} ${payment.fileName || ""}`.toLowerCase();
 
     const matchesSearch = searchTarget.includes(search.toLowerCase());
     const matchesStatus =
@@ -72,38 +62,7 @@ function Payments() {
 
   return (
     <div className="payments-page">
-      <header className="payments-navbar">
-        <div className="payments-brand" onClick={() => navigate("/student/home")}>
-          <div className="payments-logo"></div>
-          <div className="payments-brand-text">PrintIT</div>
-        </div>
-
-        <nav className="payments-nav">
-          <button onClick={() => navigate("/student/home")}>Dashboard</button>
-          <button onClick={() => navigate("/student/new-order")}>+ New Order</button>
-          <button onClick={() => navigate("/student/orders")}>Orders</button>
-          <button className="active" onClick={() => navigate("/student/payments")}>
-            Payments
-          </button>
-        </nav>
-
-        <button
-          className="payments-user payments-user-btn"
-          type="button"
-          onClick={() => navigate("/profile")}
-          title="Profile Settings"
-        >
-          {user?.profileImageUrl ? (
-            <img
-              src={user.profileImageUrl}
-              alt="Profile"
-              className="payments-user-image"
-            />
-          ) : (
-            initials
-          )}
-        </button>
-      </header>
+      <StudentTopbar activeTab="payments" />
 
       <main className="payments-content">
         <h1>Payment History</h1>
@@ -114,7 +73,7 @@ function Payments() {
             <div>
               <span>Total Spent</span>
               <h2>P {totalSpent.toFixed(2)}</h2>
-              <p>This semester</p>
+              <p>Total completed payments</p>
             </div>
             <div className="payments-stat-icon"></div>
           </div>
@@ -123,7 +82,7 @@ function Payments() {
             <div>
               <span>Transactions</span>
               <h2>{payments.length}</h2>
-              <p>Total payments</p>
+              <p>Total payment records</p>
             </div>
             <div className="payments-stat-icon"></div>
           </div>
@@ -132,7 +91,7 @@ function Payments() {
             <div>
               <span>Average Order</span>
               <h2>P {payments.length ? (totalSpent / payments.length).toFixed(2) : "0.00"}</h2>
-              <p>Per transaction</p>
+              <p>Average payment value</p>
             </div>
             <div className="payments-stat-icon"></div>
           </div>
@@ -159,8 +118,6 @@ function Payments() {
               <h3>Transactions</h3>
               <p>{filteredPayments.length} transactions found</p>
             </div>
-
-            <button className="payments-export-btn">↓ Export</button>
           </div>
 
           <table className="payments-table">
@@ -172,7 +129,6 @@ function Payments() {
                 <th>Status</th>
                 <th>Date</th>
                 <th>Amount</th>
-                <th>Actions</th>
               </tr>
             </thead>
 
@@ -193,8 +149,7 @@ function Payments() {
                     </span>
                   </td>
                   <td>{formatDate(payment.createdAt)}</td>
-                  <td>P {Number(payment.amount).toFixed(2)}</td>
-                  <td></td>
+                  <td>P {Number(payment.amount || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

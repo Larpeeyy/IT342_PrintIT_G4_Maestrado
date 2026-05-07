@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  CreditCard,
+  FileText,
+  PackageCheck,
+  Clock3,
+} from "lucide-react";
 import { getStudentDashboard } from "../../services/api";
+import StudentTopbar from "../../components/StudentTopbar";
 import "./StudentDashboard.css";
 
 function StudentDashboard() {
   const navigate = useNavigate();
-  const [dashboard, setDashboard] = useState({
-    totalOrders: 0,
-    pendingOrders: 0,
-    readyForPickupOrders: 0,
-    totalSpent: 0,
-    recentOrders: [],
-  });
 
   const user = useMemo(() => {
     try {
@@ -21,22 +21,20 @@ function StudentDashboard() {
     }
   }, []);
 
-  const firstName = user?.fullName ? user.fullName.split(" ")[0] : "Student";
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "JD";
+  const [dashboard, setDashboard] = useState({
+    totalOrders: 0,
+    pendingOrders: 0,
+    readyForPickupOrders: 0,
+    totalSpent: 0,
+    recentOrders: [],
+  });
 
   useEffect(() => {
     const loadDashboard = async () => {
       try {
         if (!user?.email) return;
         const res = await getStudentDashboard(user.email);
-        setDashboard(res.data);
+        setDashboard(res.data || {});
       } catch (error) {
         console.error("Failed to load dashboard:", error);
       }
@@ -45,19 +43,13 @@ function StudentDashboard() {
     loadDashboard();
   }, [user]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("printit_user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("studentId");
-    navigate("/login");
-  };
+  const firstName = user?.fullName ? user.fullName.split(" ")[0] : "Student";
 
   const getStatusClass = (status) => {
     if (status === "Ready for Pickup") return "status-green";
     if (status === "Printing") return "status-blue";
-    if (status === "Pending Payment") return "status-yellow";
     if (status === "Pending") return "status-yellow";
+    if (status === "Completed") return "status-gray";
     return "status-gray";
   };
 
@@ -72,44 +64,7 @@ function StudentDashboard() {
 
   return (
     <div className="student-ui-page">
-      <header className="student-ui-navbar">
-        <div className="student-ui-brand">
-          <div className="student-ui-logo"></div>
-          <div className="student-ui-brand-text">PrintIT</div>
-        </div>
-
-        <nav className="student-ui-nav">
-          <button className="student-ui-nav-link active" onClick={() => navigate("/student/home")}>
-            Dashboard
-          </button>
-          <button className="student-ui-nav-link" onClick={() => navigate("/student/new-order")}>
-            + New Order
-          </button>
-          <button className="student-ui-nav-link" onClick={() => navigate("/student/orders")}>
-            Orders
-          </button>
-          <button className="student-ui-nav-link" onClick={() => navigate("/student/payments")}>
-            Payments
-          </button>
-        </nav>
-
-        <div className="student-ui-top-actions">
-          <button className="student-ui-bell" type="button"></button>
-
-          <button
-            className="student-ui-avatar student-avatar-btn"
-            type="button"
-            onClick={() => navigate("/profile")}
-            title="Profile Settings"
-          >
-            {user?.profileImageUrl ? (
-              <img src={user.profileImageUrl} alt="Profile" className="student-avatar-image" />
-            ) : (
-              initials
-            )}
-          </button>
-        </div>
-      </header>
+      <StudentTopbar activeTab="dashboard" />
 
       <main className="student-ui-content">
         <div className="student-ui-heading-row">
@@ -130,37 +85,45 @@ function StudentDashboard() {
           <div className="student-ui-stat-card">
             <div>
               <span>Total Orders</span>
-              <h2>{dashboard.totalOrders}</h2>
-              <p>All time orders</p>
+              <h2>{dashboard.totalOrders || 0}</h2>
+              <p>All your submitted requests</p>
             </div>
-            <div className="student-ui-stat-icon"></div>
+            <div className="student-ui-stat-icon">
+              <FileText size={22} />
+            </div>
           </div>
 
           <div className="student-ui-stat-card">
             <div>
               <span>Pending Orders</span>
-              <h2>{dashboard.pendingOrders}</h2>
-              <p>Awaiting processing</p>
+              <h2>{dashboard.pendingOrders || 0}</h2>
+              <p>Still waiting to be processed</p>
             </div>
-            <div className="student-ui-stat-icon"></div>
+            <div className="student-ui-stat-icon">
+              <Clock3 size={22} />
+            </div>
           </div>
 
           <div className="student-ui-stat-card">
             <div>
               <span>Ready for Pickup</span>
-              <h2>{dashboard.readyForPickupOrders}</h2>
-              <p>Claim your prints</p>
+              <h2>{dashboard.readyForPickupOrders || 0}</h2>
+              <p>Orders ready to claim</p>
             </div>
-            <div className="student-ui-stat-icon"></div>
+            <div className="student-ui-stat-icon">
+              <PackageCheck size={22} />
+            </div>
           </div>
 
           <div className="student-ui-stat-card">
             <div>
               <span>Total Spent</span>
               <h2>P {Number(dashboard.totalSpent || 0).toFixed(2)}</h2>
-              <p>This semester</p>
+              <p>Total completed payments</p>
             </div>
-            <div className="student-ui-stat-icon"></div>
+            <div className="student-ui-stat-icon">
+              <CreditCard size={22} />
+            </div>
           </div>
         </section>
 
@@ -169,29 +132,34 @@ function StudentDashboard() {
             <div className="student-ui-panel-header">
               <div>
                 <h3>Recent Orders</h3>
-                <p>Your latest print orders</p>
+                <p>Your latest print submissions</p>
               </div>
-              <button className="student-ui-link-btn" onClick={() => navigate("/student/orders")}>
+              <button
+                className="student-ui-link-btn"
+                onClick={() => navigate("/student/orders")}
+              >
                 View all →
               </button>
             </div>
 
             <div className="student-ui-order-list">
-              {dashboard.recentOrders.length === 0 ? (
+              {!dashboard.recentOrders || dashboard.recentOrders.length === 0 ? (
                 <p>No orders yet.</p>
               ) : (
                 dashboard.recentOrders.map((order) => (
                   <div key={order.id} className="student-ui-order-item">
                     <div>
                       <h4>{order.fileName}</h4>
-                      <p>{order.orderCode} • {formatDate(order.createdAt)}</p>
+                      <p>
+                        {order.orderCode} • {formatDate(order.createdAt)}
+                      </p>
                     </div>
 
                     <div className="student-ui-order-right">
                       <span className={`student-ui-status ${getStatusClass(order.status)}`}>
                         {order.status}
                       </span>
-                      <strong>P {Number(order.totalAmount).toFixed(2)}</strong>
+                      <strong>P {Number(order.totalAmount || 0).toFixed(2)}</strong>
                     </div>
                   </div>
                 ))
@@ -203,26 +171,23 @@ function StudentDashboard() {
             <div className="student-ui-panel-header">
               <div>
                 <h3>Quick Actions</h3>
-                <p>Common tasks</p>
+                <p>Go where you need fast</p>
               </div>
             </div>
 
             <div className="student-ui-action-list">
               <button onClick={() => navigate("/student/new-order")}>Create New Order</button>
-              <button onClick={() => navigate("/student/orders")}>View All Orders</button>
-              <button onClick={() => navigate("/student/payments")}>Payment History</button>
-              <button onClick={() => navigate("/profile")}>Profile Settings</button>
-              <button onClick={handleLogout}>Logout</button>
+              <button onClick={() => navigate("/student/orders")}>View Orders</button>
+              <button onClick={() => navigate("/student/payments")}>View Payments</button>
             </div>
           </div>
         </section>
 
         <section className="student-ui-alert">
           <div>
-            <h4>Track Your Latest Orders</h4>
-            <p>Check your current request status and payment record anytime.</p>
+            <h4>Track your latest orders</h4>
+            <p>Check order status and payment updates from your student account.</p>
           </div>
-
           <button onClick={() => navigate("/student/orders")}>View Details</button>
         </section>
       </main>

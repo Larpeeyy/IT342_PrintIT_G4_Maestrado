@@ -1,0 +1,151 @@
+.staff-topbar {
+  height: 58px;
+  background: #ffffff;
+  border-bottom: 1px solid #dddddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.staff-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.staff-topbar-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #9b2c3a;
+}
+
+.staff-topbar-brand-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.staff-topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.staff-topbar-nav button {
+  border: none;
+  background: transparent;
+  color: #475467;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.staff-topbar-nav button.active {
+  background: #9b2c3a;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.staff-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.staff-profile-menu {
+  position: relative;
+}
+
+.staff-profile-button {
+  min-width: 46px;
+  height: 42px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: #f4eaec;
+  color: #9b2c3a;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.staff-profile-button:hover,
+.staff-profile-button:focus,
+.staff-profile-button:active,
+.staff-profile-button:focus-visible {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.staff-profile-image {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.staff-profile-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  min-width: 190px;
+  padding: 8px;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+  z-index: 9999;
+  display: grid;
+  gap: 8px;
+}
+
+.staff-dropdown-item {
+  width: 100%;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.staff-dropdown-item.logout {
+  background: #9b2c3a;
+  color: white;
+  border: none;
+}
+
+@media (max-width: 900px) {
+  .staff-topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .staff-topbar-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .staff-topbar-actions {
+    margin-left: auto;
+  }
+}

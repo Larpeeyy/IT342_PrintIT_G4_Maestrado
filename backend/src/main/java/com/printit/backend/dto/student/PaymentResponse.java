@@ -12,11 +12,7 @@ public class PaymentResponse {
     private String provider;
     private String status;
     private BigDecimal amount;
-    private String currency;
     private LocalDateTime createdAt;
-
-    public PaymentResponse() {
-    }
 
     public PaymentResponse(
             Long id,
@@ -26,7 +22,6 @@ public class PaymentResponse {
             String provider,
             String status,
             BigDecimal amount,
-            String currency,
             LocalDateTime createdAt
     ) {
         this.id = id;
@@ -36,7 +31,6 @@ public class PaymentResponse {
         this.provider = provider;
         this.status = status;
         this.amount = amount;
-        this.currency = currency;
         this.createdAt = createdAt;
     }
 
@@ -66,10 +60,6 @@ public class PaymentResponse {
 
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public String getCurrency() {
-        return currency;
     }
 
     public LocalDateTime getCreatedAt() {
