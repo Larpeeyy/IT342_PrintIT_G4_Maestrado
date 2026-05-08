@@ -9,8 +9,8 @@ import {
   FileText,
   Download,
 } from "lucide-react";
-import StaffTopbar from "../../components/StaffTopbar";
-import { getStaffOrderById, updateStaffOrderStatus } from "../../services/api";
+import StaffTopbar from "../../../shared/components/StaffTopbar";
+import { getStaffOrderById, updateStaffOrderStatus } from "../../../shared/services/api";
 import "./StaffViewOrder.css";
 
 function StaffViewOrder() {

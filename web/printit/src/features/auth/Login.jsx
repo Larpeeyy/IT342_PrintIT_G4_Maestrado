@@ -6,9 +6,9 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import AuthLayout from "../components/AuthLayout";
-import { loginUser } from "../services/api";
-import "../components/Auth.css";
+import AuthLayout from "./AuthLayout";
+import { loginUser } from "../../shared/services/api";
+import "./Auth.css";
 
 function Login() {
   const navigate = useNavigate();

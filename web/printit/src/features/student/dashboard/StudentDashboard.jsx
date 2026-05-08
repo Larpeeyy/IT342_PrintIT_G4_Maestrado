@@ -6,8 +6,8 @@ import {
   PackageCheck,
   Clock3,
 } from "lucide-react";
-import { getStudentDashboard } from "../../services/api";
-import StudentTopbar from "../../components/StudentTopbar";
+import { getStudentDashboard } from "../../../shared/services/api";
+import StudentTopbar from "../../../shared/components/StudentTopbar";
 import "./StudentDashboard.css";
 
 function StudentDashboard() {

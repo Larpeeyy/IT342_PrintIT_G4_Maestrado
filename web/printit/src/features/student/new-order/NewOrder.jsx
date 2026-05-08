@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { createPrintOrder } from "../../services/api";
-import StudentTopbar from "../../components/StudentTopbar";
+import { createPrintOrder } from "../../../shared/services/api";
+import StudentTopbar from "../../../shared/components/StudentTopbar";
 import "./NewOrder.css";
 
 function NewOrder() {

@@ -11,10 +11,10 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { changePassword, getProfile, updateProfile } from "../services/api";
-import { supabase } from "../services/supabaseClient";
-import NotificationBell from "../components/NotificationBell";
-import StudentTopbar from "../components/StudentTopbar";
+import { changePassword, getProfile, updateProfile } from "../../shared/services/api";
+import { supabase } from "../../shared/services/supabaseClient";
+import NotificationBell from "../../shared/components/NotificationBell";
+import StudentTopbar from "../../shared/components/StudentTopbar";
 import "./ProfileSettings.css";
 
 function ProfileSettings() {

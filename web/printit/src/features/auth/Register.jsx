@@ -11,9 +11,9 @@ import {
   EyeOff,
   ChevronDown,
 } from "lucide-react";
-import AuthLayout from "../components/AuthLayout";
-import { registerUser } from "../services/api";
-import "../components/Auth.css";
+import AuthLayout from "./AuthLayout";
+import { registerUser } from "../../shared/services/api";
+import "./Auth.css";
 
 function Register() {
   const navigate = useNavigate();

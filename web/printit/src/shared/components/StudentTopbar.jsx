@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, Settings } from "lucide-react";
-import NotificationBell from "./NotificationBell";
+import NotificationBell from "../../shared/components/NotificationBell";
 import "./StudentTopbar.css";
 
 function StudentTopbar({ activeTab = "" }) {

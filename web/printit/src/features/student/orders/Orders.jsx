@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { getStudentOrders } from "../../services/api";
-import StudentTopbar from "../../components/StudentTopbar";
+import { getStudentOrders } from "../../../shared/services/api";
+import StudentTopbar from "../../../shared/components/StudentTopbar";
 import "./Orders.css";
 
 function Orders() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import AdminTopbar from "../../components/AdminTopbar";
-import { getAdminUsers } from "../../services/api";
+import AdminTopbar from "../../../shared/components/AdminTopbar";
+import { getAdminUsers } from "../../../shared/services/api";
 import "./AdminUsers.css";
 
 function AdminUsers() {

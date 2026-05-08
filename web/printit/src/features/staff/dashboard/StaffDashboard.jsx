@@ -7,9 +7,9 @@ import {
   BadgeCheck,
   Eye,
 } from "lucide-react";
-import { getStaffDashboard } from "../../services/api";
+import { getStaffDashboard } from "../../../shared/services/api";
 import "./StaffDashboard.css";
-import StaffTopbar from "../../components/StaffTopbar";
+import StaffTopbar from "../../../shared/components/StaffTopbar";
 
 function StaffDashboard() {
   const navigate = useNavigate();

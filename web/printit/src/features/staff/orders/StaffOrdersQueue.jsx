@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye } from "lucide-react";
-import StaffTopbar from "../../components/StaffTopbar";
-import { getStaffOrders } from "../../services/api";
+import StaffTopbar from "../../../shared/components/StaffTopbar";
+import { getStaffOrders } from "../../../shared/services/api";
 import "./StaffOrdersQueue.css";
 
 function StaffOrdersQueue() {

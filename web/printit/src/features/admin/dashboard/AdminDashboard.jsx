@@ -5,12 +5,12 @@ import {
   UserCheck,
   Clock3,
 } from "lucide-react";
-import AdminTopbar from "../../components/AdminTopbar";
+import AdminTopbar from "../../../shared/components/AdminTopbar";
 import {
   getAdminDashboard,
   approveStaffRequest,
   rejectStaffRequest,
-} from "../../services/api";
+} from "../../../shared/services/api";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {

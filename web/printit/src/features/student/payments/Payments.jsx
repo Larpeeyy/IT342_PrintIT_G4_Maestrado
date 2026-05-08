@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { getStudentPayments } from "../../services/api";
-import StudentTopbar from "../../components/StudentTopbar";
+import { getStudentPayments } from "../../../shared/services/api";
+import StudentTopbar from "../../../shared/components/StudentTopbar";
 import "./Payments.css";
 
 function Payments() {
