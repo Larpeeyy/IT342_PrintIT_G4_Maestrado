@@ -93,23 +93,52 @@
   color: #667085;
 }
 
-.staff-progress-step.active .staff-progress-icon {
+.staff-progress-step.active.progress-yellow .staff-progress-icon,
+.staff-progress-step.done.progress-yellow .staff-progress-icon {
   background: #fbe8a7;
   color: #9c6500;
 }
 
-.staff-progress-step.active span {
+.staff-progress-step.active.progress-yellow span,
+.staff-progress-step.done.progress-yellow span {
   color: #9c6500;
-  font-weight: 600;
 }
 
-.staff-progress-step.done .staff-progress-icon {
-  background: #f3e8ea;
-  color: #9b2c3a;
+.staff-progress-step.active.progress-blue .staff-progress-icon,
+.staff-progress-step.done.progress-blue .staff-progress-icon {
+  background: #dbe7ff;
+  color: #2158d8;
 }
 
+.staff-progress-step.active.progress-blue span,
+.staff-progress-step.done.progress-blue span {
+  color: #2158d8;
+}
+
+.staff-progress-step.active.progress-green .staff-progress-icon,
+.staff-progress-step.done.progress-green .staff-progress-icon {
+  background: #d9f8dd;
+  color: #137333;
+}
+
+.staff-progress-step.active.progress-green span,
+.staff-progress-step.done.progress-green span {
+  color: #137333;
+}
+
+.staff-progress-step.active.progress-gray .staff-progress-icon,
+.staff-progress-step.done.progress-gray .staff-progress-icon {
+  background: #ececec;
+  color: #555;
+}
+
+.staff-progress-step.active.progress-gray span,
+.staff-progress-step.done.progress-gray span {
+  color: #555;
+}
+
+.staff-progress-step.active span,
 .staff-progress-step.done span {
-  color: #9b2c3a;
   font-weight: 600;
 }
 
@@ -244,7 +273,7 @@
   border-radius: 999px;
   font-size: 13px !important;
   font-weight: 400 !important;
-  min-width: 78px;
+  min-width: 90px;
 }
 
 .staff-order-status-yellow {
@@ -252,14 +281,14 @@
   color: #9c6500 !important;
 }
 
-.staff-order-status-pink {
-  background: #efd5e1;
-  color: #9b4c72 !important;
+.staff-order-status-blue {
+  background: #dbe7ff;
+  color: #2158d8 !important;
 }
 
-.staff-order-status-beige {
-  background: #f1e6d8;
-  color: #8b6a42 !important;
+.staff-order-status-green {
+  background: #d9f8dd;
+  color: #137333 !important;
 }
 
 .staff-order-status-gray {

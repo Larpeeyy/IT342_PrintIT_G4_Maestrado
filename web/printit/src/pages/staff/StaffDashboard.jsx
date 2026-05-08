@@ -55,8 +55,8 @@ function StaffDashboard() {
 
   const getStatusClass = (status) => {
     if (status === "Pending") return "staff-status-yellow";
-    if (status === "Printing") return "staff-status-pink";
-    if (status === "Ready for Pickup") return "staff-status-beige";
+    if (status === "Printing") return "staff-status-blue";
+    if (status === "Ready for Pickup") return "staff-status-green";
     if (status === "Completed") return "staff-status-gray";
 
     return "staff-status-gray";

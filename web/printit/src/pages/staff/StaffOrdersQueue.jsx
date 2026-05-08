@@ -46,8 +46,8 @@ function StaffOrdersQueue() {
 
   const getStatusClass = (status) => {
     if (status === "Pending") return "staff-orders-status-yellow";
-    if (status === "Printing") return "staff-orders-status-pink";
-    if (status === "Ready for Pickup") return "staff-orders-status-beige";
+    if (status === "Printing") return "staff-orders-status-blue";
+    if (status === "Ready for Pickup") return "staff-orders-status-green";
     if (status === "Completed") return "staff-orders-status-gray";
 
     return "staff-orders-status-gray";

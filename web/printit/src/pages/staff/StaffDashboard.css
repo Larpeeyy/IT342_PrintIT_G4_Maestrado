@@ -174,7 +174,7 @@
   border-radius: 999px;
   font-size: 13px;
   font-weight: 400;
-  min-width: 78px;
+  min-width: 90px;
 }
 
 .staff-status-yellow {
@@ -182,14 +182,14 @@
   color: #9c6500;
 }
 
-.staff-status-pink {
-  background: #efd5e1;
-  color: #9b4c72;
+.staff-status-blue {
+  background: #dbe7ff;
+  color: #2158d8;
 }
 
-.staff-status-beige {
-  background: #f1e6d8;
-  color: #8b6a42;
+.staff-status-green {
+  background: #d9f8dd;
+  color: #137333;
 }
 
 .staff-status-gray {

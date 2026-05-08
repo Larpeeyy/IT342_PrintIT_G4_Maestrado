@@ -104,16 +104,27 @@ function StaffViewOrder() {
     const currentIndex = steps.indexOf(order?.status || "Pending");
     const stepIndex = steps.indexOf(step);
 
-    if (stepIndex < currentIndex) return "staff-progress-step done";
-    if (stepIndex === currentIndex) return "staff-progress-step active";
+    if (stepIndex < currentIndex) return `staff-progress-step done ${getStepColorClass(step)}`;
+    if (stepIndex === currentIndex) return `staff-progress-step active ${getStepColorClass(step)}`;
+
     return "staff-progress-step";
+  };
+
+  const getStepColorClass = (step) => {
+    if (step === "Pending") return "progress-yellow";
+    if (step === "Printing") return "progress-blue";
+    if (step === "Ready for Pickup") return "progress-green";
+    if (step === "Completed") return "progress-gray";
+
+    return "progress-gray";
   };
 
   const getStatusClass = (value) => {
     if (value === "Pending") return "staff-order-status-yellow";
-    if (value === "Printing") return "staff-order-status-pink";
-    if (value === "Ready for Pickup") return "staff-order-status-beige";
+    if (value === "Printing") return "staff-order-status-blue";
+    if (value === "Ready for Pickup") return "staff-order-status-green";
     if (value === "Completed") return "staff-order-status-gray";
+
     return "staff-order-status-gray";
   };
 
