@@ -3,6 +3,7 @@ package com.printit.backend.service.student;
 import com.printit.backend.dto.student.DashboardSummaryResponse;
 import com.printit.backend.dto.student.OrderResponse;
 import com.printit.backend.entity.User;
+import com.printit.backend.entity.student.PrintOrder;
 import com.printit.backend.repository.UserRepository;
 import com.printit.backend.repository.student.PaymentRepository;
 import com.printit.backend.repository.student.PrintOrderRepository;
@@ -18,31 +19,39 @@ public class StudentDashboardService {
     private final UserRepository userRepository;
     private final PrintOrderRepository printOrderRepository;
     private final PaymentRepository paymentRepository;
-    private final StudentOrderService studentOrderService;
 
     public StudentDashboardService(
             UserRepository userRepository,
             PrintOrderRepository printOrderRepository,
-            PaymentRepository paymentRepository,
-            StudentOrderService studentOrderService
+            PaymentRepository paymentRepository
     ) {
         this.userRepository = userRepository;
         this.printOrderRepository = printOrderRepository;
         this.paymentRepository = paymentRepository;
-        this.studentOrderService = studentOrderService;
     }
 
-    public DashboardSummaryResponse getDashboardSummary(String email) {
+    public DashboardSummaryResponse getDashboardByStudentEmail(String email) {
         User student = getStudentByEmail(email);
 
-        long totalOrders = printOrderRepository.countByStudent(student);
-        long pendingOrders = printOrderRepository.countByStudentAndStatus(student, "Pending");
-        long readyForPickupOrders = printOrderRepository.countByStudentAndStatus(student, "Ready for Pickup");
+        List<PrintOrder> studentOrders =
+                printOrderRepository.findByStudentOrderByCreatedAtDesc(student);
 
-        BigDecimal totalSpent = paymentRepository.sumCompletedPaymentsByStudent(student);
-        List<OrderResponse> recentOrders = studentOrderService.getOrdersByStudentEmail(email)
-                .stream()
+        int totalOrders = studentOrders.size();
+
+        int pendingOrders = (int) studentOrders.stream()
+                .filter(order -> "Pending".equalsIgnoreCase(order.getStatus()))
+                .count();
+
+        int readyForPickupOrders = (int) studentOrders.stream()
+                .filter(order -> "Ready for Pickup".equalsIgnoreCase(order.getStatus()))
+                .count();
+
+        BigDecimal totalSpent =
+                paymentRepository.sumCompletedOrderAmountsByStudent(student);
+
+        List<OrderResponse> recentOrders = studentOrders.stream()
                 .limit(3)
+                .map(this::mapToOrderResponse)
                 .toList();
 
         return new DashboardSummaryResponse(
@@ -57,12 +66,28 @@ public class StudentDashboardService {
     private User getStudentByEmail(String email) {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        User user = existingUser.orElseThrow(() -> new RuntimeException("Student account not found."));
+        User user = existingUser.orElseThrow(
+                () -> new RuntimeException("Student account not found.")
+        );
 
         if (!"STUDENT".equalsIgnoreCase(user.getRole())) {
-            throw new RuntimeException("Only student accounts can access the student dashboard.");
+            throw new RuntimeException("Only student accounts can access student dashboard.");
         }
 
         return user;
+    }
+
+    private OrderResponse mapToOrderResponse(PrintOrder order) {
+        return new OrderResponse(
+                order.getId(),
+                order.getOrderCode(),
+                order.getFileName(),
+                order.getPaperSize(),
+                order.getColorMode(),
+                order.getCopies(),
+                order.getStatus(),
+                order.getTotalAmount(),
+                order.getCreatedAt()
+        );
     }
 }

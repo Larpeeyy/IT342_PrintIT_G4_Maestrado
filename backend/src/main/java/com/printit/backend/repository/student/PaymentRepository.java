@@ -18,6 +18,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order.student = :student AND p.status = 'Completed'")
     BigDecimal sumCompletedPaymentsByStudent(User student);
 
+    @Query("SELECT COALESCE(SUM(p.order.totalAmount), 0) FROM Payment p WHERE p.order.student = :student AND p.order.status = 'Completed'")
+    BigDecimal sumCompletedOrderAmountsByStudent(User student);
+
     List<Payment> findAllByOrderByCreatedAtDesc();
 
     Optional<Payment> findByOrder(PrintOrder order);

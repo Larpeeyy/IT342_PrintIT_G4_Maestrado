@@ -3,24 +3,30 @@ package com.printit.backend.service.staff;
 import com.printit.backend.dto.staff.StaffOrderDetailsResponse;
 import com.printit.backend.dto.staff.StaffOrderSummaryResponse;
 import com.printit.backend.dto.staff.UpdateStaffOrderStatusRequest;
+import com.printit.backend.entity.student.Payment;
 import com.printit.backend.entity.student.PrintOrder;
+import com.printit.backend.repository.student.PaymentRepository;
 import com.printit.backend.repository.student.PrintOrderRepository;
 import com.printit.backend.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StaffOrderService {
 
     private final PrintOrderRepository printOrderRepository;
+    private final PaymentRepository paymentRepository;
     private final NotificationService notificationService;
 
     public StaffOrderService(
             PrintOrderRepository printOrderRepository,
+            PaymentRepository paymentRepository,
             NotificationService notificationService
     ) {
         this.printOrderRepository = printOrderRepository;
+        this.paymentRepository = paymentRepository;
         this.notificationService = notificationService;
     }
 
@@ -38,14 +44,19 @@ public class StaffOrderService {
         return mapToDetails(order);
     }
 
-    public StaffOrderDetailsResponse updateOrderStatus(Long orderId, UpdateStaffOrderStatusRequest request) {
+    public StaffOrderDetailsResponse updateOrderStatus(
+            Long orderId,
+            UpdateStaffOrderStatusRequest request
+    ) {
         PrintOrder order = printOrderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found."));
 
-        validateStatus(request.getStatus());
-        order.setStatus(request.getStatus());
+        String newStatus = normalizeStatus(request.getStatus());
 
+        order.setStatus(newStatus);
         PrintOrder savedOrder = printOrderRepository.save(order);
+
+        updateRelatedPayment(savedOrder, newStatus);
 
         notificationService.createNotification(
                 savedOrder.getStudent(),
@@ -57,20 +68,50 @@ public class StaffOrderService {
         return mapToDetails(savedOrder);
     }
 
-    private void validateStatus(String status) {
+    private void updateRelatedPayment(PrintOrder order, String orderStatus) {
+        Optional<Payment> existingPayment = paymentRepository.findByOrder(order);
+
+        if (existingPayment.isEmpty()) {
+            return;
+        }
+
+        Payment payment = existingPayment.get();
+
+        if ("Completed".equalsIgnoreCase(orderStatus)) {
+            payment.setStatus("Completed");
+        } else {
+            payment.setStatus("Pending");
+        }
+
+        if (order.getTotalAmount() != null) {
+            payment.setAmount(order.getTotalAmount());
+        }
+
+        paymentRepository.save(payment);
+    }
+
+    private String normalizeStatus(String status) {
         if (status == null || status.isBlank()) {
             throw new RuntimeException("Status is required.");
         }
 
-        boolean valid =
-                "Pending".equalsIgnoreCase(status) ||
-                        "Printing".equalsIgnoreCase(status) ||
-                        "Ready for Pickup".equalsIgnoreCase(status) ||
-                        "Completed".equalsIgnoreCase(status);
-
-        if (!valid) {
-            throw new RuntimeException("Invalid order status.");
+        if ("Pending".equalsIgnoreCase(status)) {
+            return "Pending";
         }
+
+        if ("Printing".equalsIgnoreCase(status)) {
+            return "Printing";
+        }
+
+        if ("Ready for Pickup".equalsIgnoreCase(status)) {
+            return "Ready for Pickup";
+        }
+
+        if ("Completed".equalsIgnoreCase(status)) {
+            return "Completed";
+        }
+
+        throw new RuntimeException("Invalid order status.");
     }
 
     private StaffOrderSummaryResponse mapToSummary(PrintOrder order) {

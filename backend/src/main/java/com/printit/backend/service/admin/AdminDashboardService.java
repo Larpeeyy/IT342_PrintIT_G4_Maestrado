@@ -13,8 +13,13 @@ import com.printit.backend.repository.student.PaymentRepository;
 import com.printit.backend.repository.student.PrintOrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminDashboardService {
@@ -45,12 +50,20 @@ public class AdminDashboardService {
                         .map(this::mapToPendingStaffResponse)
                         .toList();
 
+        List<AdminDashboardResponse.ChartPointResponse> ordersPerDay =
+                getOrdersPerDayChart();
+
+        List<AdminDashboardResponse.ChartPointResponse> revenuePerMonth =
+                getRevenuePerMonthChart();
+
         return new AdminDashboardResponse(
                 totalUsers,
                 totalStudents,
                 approvedStaff,
                 pendingStaff,
-                pendingStaffRequests
+                pendingStaffRequests,
+                ordersPerDay,
+                revenuePerMonth
         );
     }
 
@@ -99,6 +112,100 @@ public class AdminDashboardService {
         userRepository.save(user);
     }
 
+    private List<AdminDashboardResponse.ChartPointResponse> getOrdersPerDayChart() {
+        Map<DayOfWeek, Long> ordersByDay = new LinkedHashMap<>();
+
+        ordersByDay.put(DayOfWeek.MONDAY, 0L);
+        ordersByDay.put(DayOfWeek.TUESDAY, 0L);
+        ordersByDay.put(DayOfWeek.WEDNESDAY, 0L);
+        ordersByDay.put(DayOfWeek.THURSDAY, 0L);
+        ordersByDay.put(DayOfWeek.FRIDAY, 0L);
+        ordersByDay.put(DayOfWeek.SATURDAY, 0L);
+        ordersByDay.put(DayOfWeek.SUNDAY, 0L);
+
+        List<PrintOrder> orders = printOrderRepository.findAllByOrderByCreatedAtDesc();
+
+        for (PrintOrder order : orders) {
+            if (order.getCreatedAt() == null) {
+                continue;
+            }
+
+            DayOfWeek day = order.getCreatedAt().getDayOfWeek();
+
+            if (ordersByDay.containsKey(day)) {
+                ordersByDay.put(day, ordersByDay.get(day) + 1);
+            }
+        }
+
+        return ordersByDay.entrySet()
+                .stream()
+                .map(entry -> new AdminDashboardResponse.ChartPointResponse(
+                        formatDayLabel(entry.getKey()),
+                        BigDecimal.valueOf(entry.getValue())
+                ))
+                .toList();
+    }
+
+    private String formatDayLabel(DayOfWeek day) {
+        return switch (day) {
+            case MONDAY -> "Mon";
+            case TUESDAY -> "Tue";
+            case WEDNESDAY -> "Wed";
+            case THURSDAY -> "Thu";
+            case FRIDAY -> "Fri";
+            case SATURDAY -> "Sat";
+            case SUNDAY -> "Sun";
+        };
+    }
+
+    private List<AdminDashboardResponse.ChartPointResponse> getRevenuePerMonthChart() {
+        YearMonth currentMonth = YearMonth.now();
+        Map<YearMonth, BigDecimal> revenueByMonth = new LinkedHashMap<>();
+
+        for (int i = 5; i >= 0; i--) {
+            YearMonth month = currentMonth.minusMonths(i);
+            revenueByMonth.put(month, BigDecimal.ZERO);
+        }
+
+        List<Payment> payments = paymentRepository.findAllByOrderByCreatedAtDesc();
+
+        for (Payment payment : payments) {
+            if (payment.getCreatedAt() == null || payment.getOrder() == null) {
+                continue;
+            }
+
+            if (!"Completed".equalsIgnoreCase(payment.getOrder().getStatus())) {
+                continue;
+            }
+
+            YearMonth paymentMonth = YearMonth.from(payment.getCreatedAt());
+
+            if (!revenueByMonth.containsKey(paymentMonth)) {
+                continue;
+            }
+
+            BigDecimal amount = payment.getOrder().getTotalAmount() != null
+                    ? payment.getOrder().getTotalAmount()
+                    : payment.getAmount();
+
+            if (amount == null) {
+                amount = BigDecimal.ZERO;
+            }
+
+            revenueByMonth.put(paymentMonth, revenueByMonth.get(paymentMonth).add(amount));
+        }
+
+        DateTimeFormatter labelFormat = DateTimeFormatter.ofPattern("MMM");
+
+        return revenueByMonth.entrySet()
+                .stream()
+                .map(entry -> new AdminDashboardResponse.ChartPointResponse(
+                        entry.getKey().format(labelFormat),
+                        entry.getValue()
+                ))
+                .toList();
+    }
+
     private PendingStaffResponse mapToPendingStaffResponse(User user) {
         return new PendingStaffResponse(
                 user.getId(),
@@ -136,15 +243,23 @@ public class AdminDashboardService {
     }
 
     private AdminPaymentResponse mapToAdminPaymentResponse(Payment payment) {
+        BigDecimal correctAmount = payment.getAmount();
+
+        if (payment.getOrder() != null && payment.getOrder().getTotalAmount() != null) {
+            correctAmount = payment.getOrder().getTotalAmount();
+        }
+
         return new AdminPaymentResponse(
                 payment.getId(),
                 payment.getPaymentCode(),
-                payment.getOrder().getOrderCode(),
-                payment.getOrder().getStudent() != null ? payment.getOrder().getStudent().getFullName() : "Unknown",
-                payment.getOrder().getFileName(),
+                payment.getOrder() != null ? payment.getOrder().getOrderCode() : "-",
+                payment.getOrder() != null && payment.getOrder().getStudent() != null
+                        ? payment.getOrder().getStudent().getFullName()
+                        : "Unknown",
+                payment.getOrder() != null ? payment.getOrder().getFileName() : "-",
                 payment.getProvider(),
-                payment.getStatus(),
-                payment.getAmount(),
+                payment.getOrder() != null ? payment.getOrder().getStatus() : payment.getStatus(),
+                correctAmount,
                 payment.getCreatedAt()
         );
     }
