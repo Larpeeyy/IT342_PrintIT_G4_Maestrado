@@ -1,22 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import OAuthSuccess from "./pages/OAuthSuccess";
-import ProfileSettings from "./pages/ProfileSettings";
+import Login from "./features/auth/Login";
+import Register from "./features/auth/Register";
+import OAuthSuccess from "./features/auth/OAuthSuccess";
+import ProfileSettings from "./features/profile/ProfileSettings";
 
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminPayments from "./pages/admin/AdminPayments";
+import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
+import AdminUsers from "./features/admin/users/AdminUsers";
+import AdminOrders from "./features/admin/orders/AdminOrders";
+import AdminPayments from "./features/admin/payments/AdminPayments";
 
-import StaffDashboard from "./pages/staff/StaffDashboard";
-import StaffOrdersQueue from "./pages/staff/StaffOrdersQueue";
-import StaffViewOrder from "./pages/staff/StaffViewOrder";
+import StaffDashboard from "./features/staff/dashboard/StaffDashboard";
+import StaffOrdersQueue from "./features/staff/orders/StaffOrdersQueue";
+import StaffViewOrder from "./features/staff/orders/StaffViewOrder";
 
-import StudentDashboard from "./pages/student/StudentDashboard";
-import NewOrder from "./pages/student/NewOrder";
-import Orders from "./pages/student/Orders";
-import Payments from "./pages/student/Payments";
+import StudentDashboard from "./features/student/dashboard/StudentDashboard";
+import NewOrder from "./features/student/new-order/NewOrder";
+import Orders from "./features/student/orders/Orders";
+import Payments from "./features/student/payments/Payments";
 
 function App() {
   return (
