@@ -78,6 +78,11 @@
   padding: 0 12px;
   font-weight: 700;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.student-profile-button.has-image {
+  padding: 0 10px 0 7px;
 }
 
 .student-profile-button:hover,
@@ -90,10 +95,12 @@
 }
 
 .student-profile-image {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
+  flex-shrink: 0;
 }
 
 .student-profile-dropdown {

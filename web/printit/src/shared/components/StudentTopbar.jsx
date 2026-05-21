@@ -1,21 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, Settings } from "lucide-react";
-import NotificationBell from "../../shared/components/NotificationBell";
+import NotificationBell from "./NotificationBell";
 import "./StudentTopbar.css";
 
 function StudentTopbar({ activeTab = "" }) {
   const navigate = useNavigate();
   const menuRef = useRef(null);
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  const user = useMemo(() => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("printit_user")) || {};
     } catch {
       return {};
     }
-  }, []);
+  });
 
   const initials = user?.fullName
     ? user.fullName
@@ -25,6 +27,30 @@ function StudentTopbar({ activeTab = "" }) {
         .slice(0, 2)
         .toUpperCase()
     : "ST";
+
+  const hasProfileImage = Boolean(user?.profileImageUrl) && !imageError;
+
+  useEffect(() => {
+    setImageError(false);
+  }, [user?.profileImageUrl]);
+
+  useEffect(() => {
+    const syncUser = () => {
+      try {
+        setUser(JSON.parse(localStorage.getItem("printit_user")) || {});
+      } catch {
+        setUser({});
+      }
+    };
+
+    window.addEventListener("profile-updated", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("profile-updated", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,7 +73,10 @@ function StudentTopbar({ activeTab = "" }) {
 
   return (
     <header className="student-topbar">
-      <div className="student-topbar-brand" onClick={() => navigate("/student/home")}>
+      <div
+        className="student-topbar-brand"
+        onClick={() => navigate("/student/home")}
+      >
         <div className="student-topbar-logo"></div>
         <span className="student-topbar-brand-text">PrintIT</span>
       </div>
@@ -88,19 +117,23 @@ function StudentTopbar({ activeTab = "" }) {
         <div className="student-profile-menu" ref={menuRef}>
           <button
             type="button"
-            className="student-profile-button"
+            className={`student-profile-button ${
+              hasProfileImage ? "has-image" : ""
+            }`}
             onClick={() => setMenuOpen((prev) => !prev)}
             title="Student Menu"
           >
-            {user?.profileImageUrl ? (
+            {hasProfileImage ? (
               <img
                 src={user.profileImageUrl}
                 alt="Profile"
                 className="student-profile-image"
+                onError={() => setImageError(true)}
               />
             ) : (
               <span>{initials}</span>
             )}
+
             <ChevronDown size={14} />
           </button>
 

@@ -78,6 +78,7 @@
   padding: 0 12px;
   font-weight: 700;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .admin-profile-button:hover,
@@ -89,11 +90,19 @@
   box-shadow: none;
 }
 
+.admin-profile-button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .admin-profile-image {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
+  flex-shrink: 0;
 }
 
 .admin-profile-dropdown {
@@ -125,10 +134,18 @@
   font-weight: 600;
 }
 
+.admin-dropdown-item:hover {
+  background: #f9f7f8;
+}
+
 .admin-dropdown-item.logout {
   background: #9b2c3a;
   color: white;
   border: none;
+}
+
+.admin-dropdown-item.logout:hover {
+  background: #862735;
 }
 
 @media (max-width: 900px) {
@@ -139,10 +156,15 @@
     gap: 10px;
   }
 
+  .admin-topbar-brand {
+    min-width: auto;
+  }
+
   .admin-topbar-nav {
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
+    order: 3;
   }
 
   .admin-topbar-actions {
