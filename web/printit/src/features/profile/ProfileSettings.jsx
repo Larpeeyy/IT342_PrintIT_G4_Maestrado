@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -22,12 +22,24 @@ function ProfileSettings() {
   const fileInputRef = useRef(null);
   const profileMenuRef = useRef(null);
 
-  const storedUser = useMemo(() => {
+  const getStoredUser = () => {
     try {
       return JSON.parse(localStorage.getItem("printit_user")) || {};
     } catch {
       return {};
     }
+  };
+
+  const updateStoredUser = useCallback((updatedProfile) => {
+    const latestStoredUser = getStoredUser();
+
+    const nextUser = {
+      ...latestStoredUser,
+      ...updatedProfile,
+    };
+
+    localStorage.setItem("printit_user", JSON.stringify(nextUser));
+    window.dispatchEvent(new Event("profile-updated"));
   }, []);
 
   const [profile, setProfile] = useState({
@@ -62,6 +74,7 @@ function ProfileSettings() {
 
   const initials = useMemo(() => {
     if (!profile.fullName) return "PI";
+
     return profile.fullName
       .split(" ")
       .map((part) => part[0])
@@ -114,41 +127,43 @@ function ProfileSettings() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (!storedUser?.email) {
+      const currentUser = getStoredUser();
+
+      if (!currentUser?.email) {
         navigate("/login");
         return;
       }
 
       try {
         setLoadingProfile(true);
-        const res = await getProfile(storedUser.email);
+
+        const res = await getProfile(currentUser.email);
 
         const nextProfile = {
           id: res.data?.id ?? null,
           fullName: res.data?.fullName ?? "",
-          username: res.data?.username ?? storedUser.email?.split("@")[0] ?? "",
-          email: res.data?.email ?? storedUser.email ?? "",
-          role: res.data?.role ?? storedUser.role ?? "",
+          username: res.data?.username ?? currentUser.email?.split("@")[0] ?? "",
+          email: res.data?.email ?? currentUser.email ?? "",
+          role: res.data?.role ?? currentUser.role ?? "",
           studentId: res.data?.studentId ?? "",
           staffId: res.data?.staffId ?? "",
-          profileImageUrl: res.data?.profileImageUrl ?? "",
+          profileImageUrl:
+            res.data?.profileImageUrl ??
+            currentUser.profileImageUrl ??
+            "",
         };
 
         setProfile(nextProfile);
         setInitialProfile(nextProfile);
-
-        localStorage.setItem(
-          "printit_user",
-          JSON.stringify({
-            ...storedUser,
-            ...nextProfile,
-          })
-        );
+        updateStoredUser(nextProfile);
       } catch (error) {
         console.error("Failed to load profile:", error);
         alert(
@@ -163,10 +178,11 @@ function ProfileSettings() {
     };
 
     loadProfile();
-  }, [navigate, storedUser]);
+  }, [navigate, updateStoredUser]);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
+
     setProfile((prev) => ({
       ...prev,
       [name]: value,
@@ -175,6 +191,7 @@ function ProfileSettings() {
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
+
     setPasswordForm((prev) => ({
       ...prev,
       [name]: value,
@@ -190,13 +207,16 @@ function ProfileSettings() {
     if (!file) return;
 
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, PNG, and WEBP images are allowed.");
+      e.target.value = "";
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
       alert("Image must be 2 MB or below.");
+      e.target.value = "";
       return;
     }
 
@@ -207,7 +227,7 @@ function ProfileSettings() {
       const folderName = (profile.email || "user").replace(/[^a-zA-Z0-9._-]/g, "_");
       const filePath = `${folderName}/${Date.now()}-${safeName}`;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("profile-photos")
         .upload(filePath, file, {
           upsert: true,
@@ -219,7 +239,11 @@ function ProfileSettings() {
 
       const { data: publicUrlData } = supabase.storage
         .from("profile-photos")
-        .getPublicUrl(uploadData.path);
+        .getPublicUrl(filePath);
+
+      if (!publicUrlData?.publicUrl) {
+        throw new Error("Failed to get uploaded image URL.");
+      }
 
       const finalUrl = `${publicUrlData.publicUrl}?t=${Date.now()}`;
 
@@ -239,15 +263,7 @@ function ProfileSettings() {
       setImageLoadError(false);
       setProfile(updatedProfile);
       setInitialProfile(updatedProfile);
-
-      localStorage.setItem(
-        "printit_user",
-        JSON.stringify({
-          ...storedUser,
-          ...updatedProfile,
-          profileImageUrl: finalUrl,
-        })
-      );
+      updateStoredUser(updatedProfile);
 
       alert("Photo uploaded successfully.");
     } catch (error) {
@@ -292,14 +308,7 @@ function ProfileSettings() {
 
       setProfile(updatedProfile);
       setInitialProfile(updatedProfile);
-
-      localStorage.setItem(
-        "printit_user",
-        JSON.stringify({
-          ...storedUser,
-          ...updatedProfile,
-        })
-      );
+      updateStoredUser(updatedProfile);
 
       alert("Profile updated successfully.");
     } catch (error) {
@@ -372,6 +381,7 @@ function ProfileSettings() {
     localStorage.removeItem("token");
     localStorage.removeItem("authToken");
     localStorage.removeItem("studentId");
+
     navigate("/login");
   };
 
@@ -442,6 +452,7 @@ function ProfileSettings() {
                 ) : (
                   <span>{initials}</span>
                 )}
+
                 <ChevronDown size={14} />
               </button>
 
@@ -487,6 +498,7 @@ function ProfileSettings() {
             <div className="profile-section-icon">
               <User size={20} />
             </div>
+
             <div>
               <h2>Profile Information</h2>
               <p>Update your personal details</p>
@@ -526,7 +538,7 @@ function ProfileSettings() {
                 <span>{uploadingPhoto ? "Uploading..." : "Change Photo"}</span>
               </button>
 
-              <small>JPG or PNG, max 2 MB</small>
+              <small>JPG, PNG, or WEBP, max 2 MB</small>
             </div>
 
             <div className="profile-form-column">
@@ -561,10 +573,12 @@ function ProfileSettings() {
               <div className="profile-grid two-columns">
                 <div className="profile-field">
                   <label>ROLE</label>
+
                   <div className="readonly-role-box">
                     <span className={`role-pill role-${profile.role?.toLowerCase()}`}>
                       {roleLabel}
                     </span>
+
                     <strong>ASSIGNED</strong>
                   </div>
                 </div>
@@ -603,6 +617,7 @@ function ProfileSettings() {
             <div className="profile-section-icon">
               <Lock size={20} />
             </div>
+
             <div>
               <h2>Change Password</h2>
               <p>Keep your account secure with a strong password</p>
@@ -613,6 +628,7 @@ function ProfileSettings() {
             <div className="profile-grid password-grid">
               <div className="profile-field">
                 <label>CURRENT PASSWORD</label>
+
                 <div className="password-input-wrap">
                   <input
                     type={showCurrentPassword ? "text" : "password"}
@@ -621,6 +637,7 @@ function ProfileSettings() {
                     onChange={handlePasswordChange}
                     placeholder="Enter current password"
                   />
+
                   <button
                     type="button"
                     className="eye-toggle-btn"
@@ -634,6 +651,7 @@ function ProfileSettings() {
 
               <div className="profile-field">
                 <label>NEW PASSWORD</label>
+
                 <div className="password-input-wrap">
                   <input
                     type={showNewPassword ? "text" : "password"}
@@ -642,6 +660,7 @@ function ProfileSettings() {
                     onChange={handlePasswordChange}
                     placeholder="Enter new password"
                   />
+
                   <button
                     type="button"
                     className="eye-toggle-btn"
@@ -655,6 +674,7 @@ function ProfileSettings() {
 
               <div className="profile-field">
                 <label>CONFIRM NEW PASSWORD</label>
+
                 <div className="password-input-wrap">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -663,6 +683,7 @@ function ProfileSettings() {
                     onChange={handlePasswordChange}
                     placeholder="Re-enter new password"
                   />
+
                   <button
                     type="button"
                     className="eye-toggle-btn"
