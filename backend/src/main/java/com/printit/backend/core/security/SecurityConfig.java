@@ -3,6 +3,7 @@ package com.printit.backend.core.security;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,31 +30,42 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
+
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers(
                                 "/",
                                 "/error",
                                 "/oauth2/**",
+                                "/login/**",
+
                                 "/api/auth/**",
                                 "/api/student/**",
                                 "/api/profile/**",
                                 "/api/admin/**",
-                                "/api/staff/**"
+                                "/api/staff/**",
+
+                                "/api/notifications/**"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
+
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\":\"Unauthorized access\"}");
                         })
+
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\":\"Forbidden\"}");
                         })
                 )
+
                 .oauth2Login(oauth -> oauth
                         .successHandler(successHandler)
                         .failureHandler(failureHandler)
