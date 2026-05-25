@@ -15,6 +15,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val printItApiBaseUrl = providers.gradleProperty("PRINTIT_API_BASE_URL")
+            .orElse("http://192.168.254.107:8080/")
+            .get()
+        val printItOAuthBaseUrl = providers.gradleProperty("PRINTIT_OAUTH_BASE_URL")
+            .orElse(printItApiBaseUrl)
+            .get()
+
+        buildConfigField("String", "PRINTIT_API_BASE_URL", "\"$printItApiBaseUrl\"")
+        buildConfigField("String", "PRINTIT_OAUTH_BASE_URL", "\"$printItOAuthBaseUrl\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

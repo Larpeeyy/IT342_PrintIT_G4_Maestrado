@@ -17,25 +17,99 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".ui.StaffDashboardActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.StudentDashboardActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.LoginActivity"
+            android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <activity
+            android:name=".features.auth.LoginActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="printit"
+                    android:host="oauth-success" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="printit"
+                    android:host="oauth-error" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".features.auth.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.student.dashboard.StudentDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.student.neworder.NewOrderActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.student.orders.StudentOrdersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.student.payments.StudentPaymentsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.staff.dashboard.StaffDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.staff.orders.StaffOrdersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.staff.orders.StaffViewOrderActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.admin.dashboard.AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.admin.users.AdminUsersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.admin.payments.AdminPaymentsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.admin.orders.AdminOrdersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.profile.ProfileSettingsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.notifications.NotificationsActivity"
+            android:exported="false" />
 
     </application>
 

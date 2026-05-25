@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="printit_maroon">#9B2C3A</color>
+    <color name="printit_maroon_dark">#7F2430</color>
+    <color name="printit_maroon_soft">#F4EAEC</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#111827</color>
+
+    <color name="gray_bg">#F5F3F4</color>
+    <color name="gray_text">#667085</color>
+    <color name="gray_border">#E5E7EB</color>
+
+    <color name="purple_200">#9B2C3A</color>
+    <color name="purple_500">#9B2C3A</color>
+    <color name="purple_700">#7F2430</color>
+    <color name="teal_200">#9B2C3A</color>
+    <color name="teal_700">#7F2430</color>
 </resources>
