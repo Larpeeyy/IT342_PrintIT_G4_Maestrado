@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { createPrintOrder } from "../../../shared/services/api";
+import { createPrintOrderWithFile } from "../../../shared/services/api";
 import StudentTopbar from "../../../shared/components/StudentTopbar";
 import "./NewOrder.css";
 
 function NewOrder() {
   const navigate = useNavigate();
+  const maxFileSize = 50 * 1024 * 1024;
 
   const user = useMemo(() => {
     try {
@@ -32,6 +33,12 @@ function NewOrder() {
 
     if (!valid) {
       alert("Only PDF and DOCX files are allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      alert("File must not exceed 50 MB.");
       e.target.value = "";
       return;
     }
@@ -69,12 +76,17 @@ function NewOrder() {
       return;
     }
 
+    if (selectedFile.size > maxFileSize) {
+      alert("File must not exceed 50 MB.");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      await createPrintOrder({
+      await createPrintOrderWithFile({
         email: user.email,
-        fileName: selectedFile.name,
+        file: selectedFile,
         paperSize,
         colorMode,
         copies: Number(copies),
@@ -85,10 +97,12 @@ function NewOrder() {
     } catch (error) {
       console.error("Create order error:", error);
       alert(
-        error?.response?.data?.message ||
-          error?.response?.data?.error ||
-          error?.message ||
-          "Failed to submit order."
+        error?.response?.status === 413
+          ? "File must not exceed 50 MB."
+          : error?.response?.data?.message ||
+              error?.response?.data?.error ||
+              error?.message ||
+              "Failed to submit order."
       );
     } finally {
       setLoading(false);

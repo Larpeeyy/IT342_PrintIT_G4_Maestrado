@@ -5,6 +5,7 @@ const api = axios.create({
 });
 
 export const registerUser = (data) => api.post("/api/auth/register", data);
+
 export const loginUser = (data) => api.post("/api/auth/login", data);
 
 export const getStudentDashboard = (email) =>
@@ -12,6 +13,28 @@ export const getStudentDashboard = (email) =>
 
 export const createPrintOrder = (data) =>
   api.post("/api/student/orders", data);
+
+export const createPrintOrderWithFile = ({ file, ...data }) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("email", data.email);
+  formData.append("paperSize", data.paperSize);
+  formData.append("colorMode", data.colorMode);
+  formData.append("copies", String(data.copies));
+
+  return api.post("/api/student/orders/with-file", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const uploadPrintOrderFile = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return api.post("/api/student/orders/upload", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 
 export const getStudentOrders = (email) =>
   api.get("/api/student/orders", { params: { email } });
@@ -66,6 +89,9 @@ export const getStaffOrderById = (orderId) =>
 
 export const updateStaffOrderStatus = (orderId, data) =>
   api.put(`/api/staff/orders/${orderId}/status`, data);
+
+export const getStaffOrderDownloadUrl = (orderId) =>
+  `${api.defaults.baseURL}/api/staff/orders/${orderId}/download`;
 
 export const getNotifications = (email) =>
   api.get("/api/notifications", { params: { email } });

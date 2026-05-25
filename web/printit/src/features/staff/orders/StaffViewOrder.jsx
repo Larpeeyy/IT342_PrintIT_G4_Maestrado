@@ -10,7 +10,11 @@ import {
   Download,
 } from "lucide-react";
 import StaffTopbar from "../../../shared/components/StaffTopbar";
-import { getStaffOrderById, updateStaffOrderStatus } from "../../../shared/services/api";
+import {
+  getStaffOrderById,
+  updateStaffOrderStatus,
+  getStaffOrderDownloadUrl,
+} from "../../../shared/services/api";
 import "./StaffViewOrder.css";
 
 function StaffViewOrder() {
@@ -82,11 +86,23 @@ function StaffViewOrder() {
   };
 
   const handleDownloadFile = () => {
-    if (order?.fileUrl) {
-      window.open(order.fileUrl, "_blank");
-    } else {
-      alert("File download is not available.");
+    if (!order?.id) {
+      alert("File download is not available. This order could not be found.");
+      return;
     }
+
+    if (!order?.fileUrl) {
+      alert(
+        "File download is not available because this order has no saved file URL."
+      );
+      return;
+    }
+
+    window.open(
+      getStaffOrderDownloadUrl(order.id),
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const formatDate = (value) => {
@@ -104,8 +120,13 @@ function StaffViewOrder() {
     const currentIndex = steps.indexOf(order?.status || "Pending");
     const stepIndex = steps.indexOf(step);
 
-    if (stepIndex < currentIndex) return `staff-progress-step done ${getStepColorClass(step)}`;
-    if (stepIndex === currentIndex) return `staff-progress-step active ${getStepColorClass(step)}`;
+    if (stepIndex < currentIndex) {
+      return `staff-progress-step done ${getStepColorClass(step)}`;
+    }
+
+    if (stepIndex === currentIndex) {
+      return `staff-progress-step active ${getStepColorClass(step)}`;
+    }
 
     return "staff-progress-step";
   };
@@ -205,9 +226,10 @@ function StaffViewOrder() {
                   className="staff-download-btn"
                   type="button"
                   onClick={handleDownloadFile}
+                  disabled={!order.fileUrl}
                 >
                   <Download size={16} />
-                  <span>Download File</span>
+                  <span>{order.fileUrl ? "Download File" : "No File Available"}</span>
                 </button>
               </div>
 
@@ -258,9 +280,7 @@ function StaffViewOrder() {
 
                   <div>
                     <span>Total</span>
-                    <strong>
-                      P {Number(order.totalAmount || 0).toFixed(2)}
-                    </strong>
+                    <strong>P {Number(order.totalAmount || 0).toFixed(2)}</strong>
                   </div>
                 </div>
               </div>
