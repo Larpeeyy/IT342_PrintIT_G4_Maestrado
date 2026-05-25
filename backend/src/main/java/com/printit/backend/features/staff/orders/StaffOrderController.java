@@ -1,5 +1,8 @@
 package com.printit.backend.features.staff.orders;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,23 @@ public class StaffOrderController {
     @GetMapping("/{orderId}")
     public StaffOrderDetailsResponse getOrderById(@PathVariable Long orderId) {
         return staffOrderService.getOrderById(orderId);
+    }
+
+    @GetMapping("/{orderId}/download")
+    public ResponseEntity<?> downloadOrderFile(@PathVariable Long orderId) {
+        StaffOrderDownloadFile downloadFile = staffOrderService.getDownloadFile(orderId);
+
+        if (downloadFile.isRedirect()) {
+            return ResponseEntity
+                    .status(302)
+                    .header(HttpHeaders.LOCATION, downloadFile.getRedirectUrl())
+                    .build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(downloadFile.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, downloadFile.getContentDisposition())
+                .body(downloadFile.getResource());
     }
 
     @PutMapping("/{orderId}/status")

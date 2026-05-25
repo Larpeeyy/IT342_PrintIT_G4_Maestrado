@@ -5,13 +5,28 @@ import com.printit.backend.core.entity.PrintOrder;
 import com.printit.backend.core.repository.PaymentRepository;
 import com.printit.backend.core.repository.PrintOrderRepository;
 import com.printit.backend.features.notifications.NotificationService;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StaffOrderService {
+
+    private static final String PRINT_ORDER_UPLOAD_DIR = "uploads/print-orders";
 
     private final PrintOrderRepository printOrderRepository;
     private final PaymentRepository paymentRepository;
@@ -31,7 +46,7 @@ public class StaffOrderService {
         return printOrderRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::mapToSummary)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public StaffOrderDetailsResponse getOrderById(Long orderId) {
@@ -39,6 +54,65 @@ public class StaffOrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found."));
 
         return mapToDetails(order);
+    }
+
+    public StaffOrderDownloadFile getDownloadFile(Long orderId) {
+        PrintOrder order = printOrderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found."));
+
+        if (order.getFileUrl() == null || order.getFileUrl().isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "File download is not available because this order has no saved file URL."
+            );
+        }
+
+        if (!isLocalPrintOrderFileUrl(order.getFileUrl())) {
+            return new StaffOrderDownloadFile(order.getFileUrl());
+        }
+
+        try {
+            Path uploadPath = Paths.get(PRINT_ORDER_UPLOAD_DIR)
+                    .toAbsolutePath()
+                    .normalize();
+
+            String storedFileName = extractStoredFileName(order.getFileUrl());
+
+            Path filePath = uploadPath
+                    .resolve(storedFileName)
+                    .normalize();
+
+            if (!filePath.startsWith(uploadPath) || !Files.exists(filePath)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Uploaded file was not found.");
+            }
+
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Uploaded file is not readable.");
+            }
+
+            String contentType = Files.probeContentType(filePath);
+
+            if (contentType == null || contentType.isBlank()) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            }
+
+            String downloadName = order.getFileName() != null && !order.getFileName().isBlank()
+                    ? order.getFileName()
+                    : filePath.getFileName().toString();
+
+            String contentDisposition = ContentDisposition.attachment()
+                    .filename(downloadName, StandardCharsets.UTF_8)
+                    .build()
+                    .toString();
+
+            return new StaffOrderDownloadFile(resource, contentType, contentDisposition);
+        } catch (ResponseStatusException error) {
+            throw error;
+        } catch (Exception error) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to download file.");
+        }
     }
 
     public StaffOrderDetailsResponse updateOrderStatus(
@@ -111,6 +185,32 @@ public class StaffOrderService {
         throw new RuntimeException("Invalid order status.");
     }
 
+    private String extractStoredFileName(String fileUrl) {
+        try {
+            URI uri = URI.create(fileUrl);
+            String path = uri.getPath();
+
+            if (path != null && !path.isBlank()) {
+                String fileName = path.substring(path.lastIndexOf('/') + 1);
+                return URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+            }
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+        return URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+    }
+
+    private boolean isLocalPrintOrderFileUrl(String fileUrl) {
+        try {
+            URI uri = URI.create(fileUrl);
+            String path = uri.getPath();
+            return path != null && path.contains("/api/files/print-orders/");
+        } catch (IllegalArgumentException ignored) {
+            return fileUrl.contains("/api/files/print-orders/");
+        }
+    }
+
     private StaffOrderSummaryResponse mapToSummary(PrintOrder order) {
         return new StaffOrderSummaryResponse(
                 order.getId(),
@@ -130,6 +230,7 @@ public class StaffOrderService {
                 order.getStudent() != null ? order.getStudent().getFullName() : "Unknown",
                 order.getStudent() != null ? order.getStudent().getEmail() : "Unknown",
                 order.getFileName(),
+                order.getFileUrl(),
                 order.getPaperSize(),
                 order.getColorMode(),
                 order.getCopies(),

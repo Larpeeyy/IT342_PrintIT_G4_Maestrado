@@ -1,11 +1,11 @@
 package com.printit.backend.features.student.orders;
 
-import com.printit.backend.core.entity.User;
 import com.printit.backend.core.entity.Payment;
 import com.printit.backend.core.entity.PrintOrder;
-import com.printit.backend.core.repository.UserRepository;
+import com.printit.backend.core.entity.User;
 import com.printit.backend.core.repository.PaymentRepository;
 import com.printit.backend.core.repository.PrintOrderRepository;
+import com.printit.backend.core.repository.UserRepository;
 import com.printit.backend.features.notifications.NotificationService;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentOrderService {
@@ -43,11 +44,16 @@ public class StudentOrderService {
         PrintOrder order = new PrintOrder();
         order.setOrderCode(generateOrderCode());
         order.setFileName(request.getFileName().trim());
+        order.setFileUrl(cleanOptionalText(request.getFileUrl()));
         order.setPaperSize(request.getPaperSize().trim());
         order.setColorMode(normalizeColorMode(request.getColorMode()));
         order.setCopies(request.getCopies());
         order.setStatus("Pending");
-        order.setTotalAmount(calculateAmount(request.getPaperSize(), request.getColorMode(), request.getCopies()));
+        order.setTotalAmount(calculateAmount(
+                request.getPaperSize(),
+                request.getColorMode(),
+                request.getCopies()
+        ));
         order.setCreatedAt(LocalDateTime.now());
         order.setStudent(student);
 
@@ -71,6 +77,7 @@ public class StudentOrderService {
         );
 
         List<User> staffUsers = userRepository.findByRoleAndApprovalStatus("STAFF", "APPROVED");
+
         for (User staff : staffUsers) {
             notificationService.createNotification(
                     staff,
@@ -85,10 +92,11 @@ public class StudentOrderService {
 
     public List<OrderResponse> getOrdersByStudentEmail(String email) {
         User student = getStudentByEmail(email);
+
         return printOrderRepository.findByStudentOrderByCreatedAtDesc(student)
                 .stream()
                 .map(this::mapToOrderResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public OrderResponse getOrderByIdAndStudentEmail(Long orderId, String email) {
@@ -110,8 +118,13 @@ public class StudentOrderService {
         }
 
         String lowerFileName = request.getFileName().toLowerCase(Locale.ROOT);
+
         if (!(lowerFileName.endsWith(".pdf") || lowerFileName.endsWith(".docx"))) {
             throw new RuntimeException("Only PDF and DOCX files are allowed.");
+        }
+
+        if (request.getFileUrl() == null || request.getFileUrl().isBlank()) {
+            throw new RuntimeException("Uploaded file URL is required.");
         }
 
         if (request.getPaperSize() == null || request.getPaperSize().isBlank()) {
@@ -144,17 +157,22 @@ public class StudentOrderService {
 
         switch (paperSize.toUpperCase(Locale.ROOT)) {
             case "LETTER":
+            case "SHORT":
                 base = BigDecimal.valueOf(5);
                 break;
+
             case "LEGAL":
+            case "LONG":
                 base = BigDecimal.valueOf(6);
                 break;
+
             default:
                 base = BigDecimal.valueOf(4);
                 break;
         }
 
         BigDecimal colorExtra;
+
         if ("Color".equalsIgnoreCase(colorMode)) {
             colorExtra = BigDecimal.valueOf(3);
         } else {
@@ -168,7 +186,16 @@ public class StudentOrderService {
         if ("Color".equalsIgnoreCase(colorMode)) {
             return "Color";
         }
+
         return "Black & White";
+    }
+
+    private String cleanOptionalText(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        return value.trim();
     }
 
     private String generateOrderCode() {

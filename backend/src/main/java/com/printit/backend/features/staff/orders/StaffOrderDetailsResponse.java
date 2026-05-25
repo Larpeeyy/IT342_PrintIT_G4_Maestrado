@@ -8,8 +8,9 @@ public class StaffOrderDetailsResponse {
     private Long id;
     private String orderCode;
     private String studentName;
-    private String studentEmail;
+    private String email;
     private String fileName;
+    private String fileUrl;
     private String paperSize;
     private String colorMode;
     private Integer copies;
@@ -21,8 +22,9 @@ public class StaffOrderDetailsResponse {
             Long id,
             String orderCode,
             String studentName,
-            String studentEmail,
+            String email,
             String fileName,
+            String fileUrl,
             String paperSize,
             String colorMode,
             Integer copies,
@@ -33,8 +35,9 @@ public class StaffOrderDetailsResponse {
         this.id = id;
         this.orderCode = orderCode;
         this.studentName = studentName;
-        this.studentEmail = studentEmail;
+        this.email = email;
         this.fileName = fileName;
+        this.fileUrl = fileUrl;
         this.paperSize = paperSize;
         this.colorMode = colorMode;
         this.copies = copies;
@@ -55,12 +58,16 @@ public class StaffOrderDetailsResponse {
         return studentName;
     }
 
-    public String getStudentEmail() {
-        return studentEmail;
+    public String getEmail() {
+        return email;
     }
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
     }
 
     public String getPaperSize() {

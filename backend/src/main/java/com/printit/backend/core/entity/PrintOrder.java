@@ -19,6 +19,9 @@ public class PrintOrder {
     @Column(name = "file_name")
     private String fileName;
 
+    @Column(name = "file_url", columnDefinition = "TEXT")
+    private String fileUrl;
+
     @Column(name = "paper_size")
     private String paperSize;
 
@@ -59,6 +62,14 @@ public class PrintOrder {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
     public String getPaperSize() {
@@ -122,6 +133,7 @@ public class PrintOrder {
         if (createdAt == null) {
             createdAt = LocalDateTime.now();
         }
+
         if (status == null || status.isBlank()) {
             status = "Pending";
         }
