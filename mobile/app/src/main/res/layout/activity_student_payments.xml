@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/paymentsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F3F4"
@@ -59,79 +60,6 @@
 
         </LinearLayout>
 
-        <!-- STUDENT NAVIGATION -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:background="#FFFFFF"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp">
-
-                <TextView
-                    android:id="@+id/navStudentDashboard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_button_maroon"
-                    android:gravity="center"
-                    android:minWidth="120dp"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="Dashboard"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/navStudentNewOrder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_button_soft"
-                    android:gravity="center"
-                    android:minWidth="120dp"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="+ New Order"
-                    android:textColor="#9B2C3A"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/navStudentOrders"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_button_soft"
-                    android:gravity="center"
-                    android:minWidth="100dp"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="Orders"
-                    android:textColor="#9B2C3A"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/navStudentPayments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_button_soft"
-                    android:gravity="center"
-                    android:minWidth="110dp"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="Payments"
-                    android:textColor="#9B2C3A"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
         <!-- CONTENT -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -140,139 +68,32 @@
             android:padding="18dp">
 
             <TextView
-                android:id="@+id/tvWelcomeTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome back, Student!"
+                android:text="Payment History"
                 android:textColor="#111827"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvWelcomeMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Here's what's happening with your print orders."
+                android:text="View all your payment transactions."
                 android:textColor="#667085"
                 android:textSize="15sp" />
 
+            <!-- SUMMARY CARDS -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
+                android:layout_marginTop="20dp"
+                android:columnCount="1">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="132dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/bg_card_white"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Total Orders"
-                        android:textColor="#667085"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalOrders"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="--"
-                        android:textColor="#111827"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="All submitted requests"
-                        android:textColor="#667085"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="132dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/bg_card_white"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Pending Orders"
-                        android:textColor="#667085"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvPendingOrders"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="--"
-                        android:textColor="#111827"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Still waiting"
-                        android:textColor="#667085"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="132dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/bg_card_white"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Ready for Pickup"
-                        android:textColor="#667085"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvReadyOrders"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="--"
-                        android:textColor="#111827"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Orders ready"
-                        android:textColor="#667085"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="132dp"
-                    android:layout_columnWeight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="118dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_card_white"
                     android:orientation="vertical"
                     android:padding="18dp">
@@ -289,50 +110,174 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="P --"
+                        android:text="P 0.00"
                         android:textColor="#111827"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Completed payments"
+                        android:text="Total completed payments"
                         android:textColor="#667085"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="118dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/bg_card_white"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Transactions"
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvTransactions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="0"
+                        android:textColor="#111827"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Total payment records"
+                        android:textColor="#667085"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="118dp"
+                    android:background="@drawable/bg_card_white"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Average Order"
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAverageOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="P 0.00"
+                        android:textColor="#111827"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Average payment value"
+                        android:textColor="#667085"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
             </GridLayout>
 
+            <!-- FILTER CARD -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:background="@drawable/bg_card_white"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
+
+                <EditText
+                    android:id="@+id/etPaymentSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Search by payment ID, order ID, or description..."
+                    android:inputType="text"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="#111827"
+                    android:textColorHint="#667085"
+                    android:textSize="14sp" />
+
+                <Spinner
+                    android:id="@+id/spPaymentStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_input"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp" />
+
+            </LinearLayout>
+
+            <!-- TRANSACTIONS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/bg_card_white"
+                android:orientation="vertical"
+                android:padding="18dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recent Orders"
+                    android:text="Transactions"
                     android:textColor="#111827"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvRecentOrders"
+                    android:id="@+id/tvPaymentsCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="No recent orders yet."
+                    android:layout_marginTop="4dp"
+                    android:text="Loading payments..."
                     android:textColor="#667085"
                     android:textSize="14sp" />
 
+                <LinearLayout
+                    android:id="@+id/paymentsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical" />
+
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/btnBackToDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/bg_button_maroon"
+                android:gravity="center"
+                android:text="Back to Dashboard"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>

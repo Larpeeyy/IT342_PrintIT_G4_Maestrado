@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#F3F3F3">
+    android:background="#F5F3F4"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,200 +12,291 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="64dp"
             android:background="#FFFFFF"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="18dp"
             android:paddingEnd="18dp">
 
-            <LinearLayout
+            <View
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@drawable/bg_circle_maroon" />
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:text="PrintIT"
+                android:textColor="#111827"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:gravity="center"
-                    android:text="🖨"
-                    android:textSize="20sp"
-                    android:background="@android:color/transparent" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PrintIT"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="#111827"
-                    android:layout_marginStart="12dp" />
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/tvNotificationBell"
+                android:layout_width="52dp"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_button_soft"
+                android:gravity="center"
+                android:text="🔔"
+                android:textColor="#9B2C3A"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvProfileBadge"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="52dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_profile_badge"
                 android:gravity="center"
                 android:text="SF"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:background="#8F2F39" />
+                android:textColor="#9B2C3A"
+                android:textStyle="bold" />
+
         </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="#FFFFFF"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp">
+
+                <TextView
+                    android:id="@+id/navStaffDashboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_button_maroon"
+                    android:gravity="center"
+                    android:minWidth="120dp"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:text="Dashboard"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/navStaffOrders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/bg_button_soft"
+                    android:gravity="center"
+                    android:minWidth="130dp"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:text="Orders Queue"
+                    android:textColor="#9B2C3A"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="18dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvWelcomeTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="24dp"
-                android:layout_marginBottom="24dp">
+                android:text="Staff Dashboard"
+                android:textColor="#111827"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvWelcomeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Staff Dashboard"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#111827"
-                    android:layout_marginBottom="10dp" />
-
-                <TextView
-                    android:id="@+id/tvWelcomeMessage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Welcome to PrintIT. This page is currently for testing role-based login and navigation."
-                    android:textSize="15sp"
-                    android:textColor="#667085" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvWelcomeMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Manage and process student print requests."
+                android:textColor="#667085"
+                android:textSize="15sp" />
 
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
                 android:columnCount="2"
-                android:rowCount="2"
                 android:useDefaultMargins="true">
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="140dp"
+                    android:layout_height="132dp"
                     android:layout_columnWeight="1"
+                    android:background="@drawable/bg_card_white"
                     android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Order Queue"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
+                        android:text="Pending Orders"
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvPendingOrders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="--"
                         android:textColor="#111827"
-                        android:layout_marginBottom="10dp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data yet."
-                        android:textSize="14sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="6dp"
+                        android:text="Waiting to process"
+                        android:textColor="#667085"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="140dp"
+                    android:layout_height="132dp"
                     android:layout_columnWeight="1"
+                    android:background="@drawable/bg_card_white"
                     android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pending Prints"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
+                        android:text="Printing Orders"
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvPrintingOrders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="--"
                         android:textColor="#111827"
-                        android:layout_marginBottom="10dp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data yet."
-                        android:textSize="14sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="6dp"
+                        android:text="Currently printing"
+                        android:textColor="#667085"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="140dp"
+                    android:layout_height="132dp"
                     android:layout_columnWeight="1"
+                    android:background="@drawable/bg_card_white"
                     android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Ready for Pickup"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#111827"
-                        android:layout_marginBottom="10dp" />
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvReadyOrders"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data yet."
-                        android:textSize="14sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="8dp"
+                        android:text="--"
+                        android:textColor="#111827"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Ready to claim"
+                        android:textColor="#667085"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="140dp"
+                    android:layout_height="132dp"
                     android:layout_columnWeight="1"
+                    android:background="@drawable/bg_card_white"
                     android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Notifications"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
+                        android:text="Completed Today"
+                        android:textColor="#667085"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvCompletedToday"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="--"
                         android:textColor="#111827"
-                        android:layout_marginBottom="10dp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data yet."
-                        android:textSize="14sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="6dp"
+                        android:text="Finished orders"
+                        android:textColor="#667085"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </GridLayout>
 
-            <Button
-                android:id="@+id/btnLogout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Logout"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8F2F39"
-                android:layout_marginTop="20dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/bg_card_white"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recent Orders"
+                    android:textColor="#111827"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvRecentOrders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="No recent orders yet."
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

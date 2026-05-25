@@ -53,13 +53,13 @@
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bg_profile_badge"
                 android:gravity="center"
-                android:text="ST"
+                android:text="AD"
                 android:textColor="#9B2C3A"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- STUDENT NAVIGATION -->
+        <!-- ADMIN NAVIGATION -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="58dp"
@@ -75,7 +75,7 @@
                 android:paddingEnd="18dp">
 
                 <TextView
-                    android:id="@+id/navStudentDashboard"
+                    android:id="@+id/navAdminDashboard"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_button_maroon"
@@ -88,35 +88,21 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/navStudentNewOrder"
+                    android:id="@+id/navAdminUsers"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
                     android:background="@drawable/bg_button_soft"
                     android:gravity="center"
-                    android:minWidth="120dp"
+                    android:minWidth="90dp"
                     android:paddingStart="18dp"
                     android:paddingEnd="18dp"
-                    android:text="+ New Order"
+                    android:text="Users"
                     android:textColor="#9B2C3A"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/navStudentOrders"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_button_soft"
-                    android:gravity="center"
-                    android:minWidth="100dp"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="Orders"
-                    android:textColor="#9B2C3A"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/navStudentPayments"
+                    android:id="@+id/navAdminPayments"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
@@ -129,7 +115,22 @@
                     android:textColor="#9B2C3A"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/navAdminOrders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/bg_button_soft"
+                    android:gravity="center"
+                    android:minWidth="90dp"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:text="Orders"
+                    android:textColor="#9B2C3A"
+                    android:textStyle="bold" />
+
             </LinearLayout>
+
         </HorizontalScrollView>
 
         <!-- CONTENT -->
@@ -143,7 +144,7 @@
                 android:id="@+id/tvWelcomeTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome back, Student!"
+                android:text="Admin Dashboard"
                 android:textColor="#111827"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -153,10 +154,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Here's what's happening with your print orders."
+                android:text="Monitor users and approve staff registration requests."
                 android:textColor="#667085"
                 android:textSize="15sp" />
 
+            <!-- SUMMARY CARDS -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -175,12 +177,12 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Orders"
+                        android:text="Total Users"
                         android:textColor="#667085"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tvTotalOrders"
+                        android:id="@+id/tvTotalUsers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -193,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="All submitted requests"
+                        android:text="All accounts"
                         android:textColor="#667085"
                         android:textSize="12sp" />
 
@@ -210,12 +212,12 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pending Orders"
+                        android:text="Students"
                         android:textColor="#667085"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tvPendingOrders"
+                        android:id="@+id/tvStudents"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -228,7 +230,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Still waiting"
+                        android:text="Student accounts"
                         android:textColor="#667085"
                         android:textSize="12sp" />
 
@@ -245,12 +247,12 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Ready for Pickup"
+                        android:text="Approved Staff"
                         android:textColor="#667085"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tvReadyOrders"
+                        android:id="@+id/tvApprovedStaff"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -263,7 +265,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Orders ready"
+                        android:text="Allowed access"
                         android:textColor="#667085"
                         android:textSize="12sp" />
 
@@ -280,16 +282,16 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Spent"
+                        android:text="Pending Staff"
                         android:textColor="#667085"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tvTotalSpent"
+                        android:id="@+id/tvPendingStaff"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="P --"
+                        android:text="--"
                         android:textColor="#111827"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -298,7 +300,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Completed payments"
+                        android:text="Needs action"
                         android:textColor="#667085"
                         android:textSize="12sp" />
 
@@ -306,6 +308,7 @@
 
             </GridLayout>
 
+            <!-- ORDERS PER DAY GRAPH -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -317,22 +320,79 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recent Orders"
+                    android:text="Orders Per Day"
+                    android:textColor="#111827"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.printit.mobile.features.admin.dashboard.AdminLineChartView
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="14dp" />
+
+            </LinearLayout>
+
+            <!-- REVENUE PER MONTH GRAPH -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/bg_card_white"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Revenue Per Month"
+                    android:textColor="#111827"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.printit.mobile.features.admin.dashboard.AdminBarChartView
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="14dp" />
+
+            </LinearLayout>
+
+            <!-- PENDING STAFF REQUESTS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/bg_card_white"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pending Staff Requests"
                     android:textColor="#111827"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvRecentOrders"
+                    android:id="@+id/tvPendingStaffMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Loading pending staff requests..."
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/pendingStaffContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="No recent orders yet."
-                    android:textColor="#667085"
-                    android:textSize="14sp" />
+                    android:orientation="vertical" />
 
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>

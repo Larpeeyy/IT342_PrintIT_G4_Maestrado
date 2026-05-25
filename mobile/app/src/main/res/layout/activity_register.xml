@@ -2,176 +2,365 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#F4F4F4">
+    android:background="#F5F3F4"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingTop="36dp"
+        android:paddingBottom="36dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PrintIT"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="#8C2F39"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp" />
+            android:letterSpacing="0.35"
+            android:text="UNIVERSITY PRINT SERVICES"
+            android:textColor="#9B2C3A"
+            android:textSize="12sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Create your account"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp" />
+            android:textColor="#111827"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Join PrintIT to start submitting print jobs on campus."
+            android:textColor="#667085"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_auth_tab_container"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/tabSignIn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Sign In"
+                android:textColor="#667085"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tabRegister"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_auth_tab_selected"
+                android:gravity="center"
+                android:text="Register"
+                android:textColor="#9B2C3A"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_card_white"
             android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Register"
-                android:textStyle="bold"
-                android:textSize="22sp"
-                android:textColor="#8C2F39"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Account Type" />
+                android:text="I am a..."
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <RadioGroup
                 android:id="@+id/rgRole"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp">
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rbStudent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:buttonTint="#9B2C3A"
+                    android:checked="true"
                     android:text="Student"
-                    android:checked="true" />
+                    android:textColor="#9B2C3A"
+                    android:textStyle="bold" />
 
                 <RadioButton
                     android:id="@+id/rbStaff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:buttonTint="#9B2C3A"
                     android:text="Staff"
-                    android:layout_marginStart="20dp" />
+                    android:textColor="#667085"
+                    android:textStyle="bold" />
+
             </RadioGroup>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Full Name" />
+                android:layout_marginTop="18dp"
+                android:text="Full Name"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
                 android:hint="Enter your full name"
                 android:inputType="textPersonName"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="12dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#111827"
+                android:textColorHint="#98A2B3"
+                android:textSize="15sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tvEmailLabel"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email Address" />
+                android:layout_marginTop="18dp"
+                android:text="University Email"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvEmailHelper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Use your official student university email address."
+                android:textColor="#667085"
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Enter your email"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
+                android:hint="firstname.lastname@cit.edu"
                 android:inputType="textEmailAddress"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="12dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#111827"
+                android:textColorHint="#98A2B3"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tvIdLabel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Student ID" />
+                android:layout_marginTop="18dp"
+                android:text="Student ID"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etIdNumber"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Enter your ID"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
+                android:hint="00-0000-000"
                 android:inputType="text"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="12dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#111827"
+                android:textColorHint="#98A2B3"
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/tvHelper"
+                android:id="@+id/tvDepartmentLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Staff accounts require verification against institutional records."
-                android:textColor="#777777"
-                android:textSize="12sp"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="18dp"
+                android:text="Faculty / Department"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinnerDepartment"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
+                android:dropDownVerticalOffset="4dp"
+                android:popupBackground="#FFFFFF"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password" />
-
-            <EditText
-                android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Enter your password"
-                android:inputType="textPassword"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Password"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Min. 8 characters"
+                    android:inputType="textPassword"
+                    android:textColor="#111827"
+                    android:textColorHint="#98A2B3"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvTogglePassword"
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="👁"
+                    android:textColor="#98A2B3"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Confirm Password" />
-
-            <EditText
-                android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Confirm your password"
-                android:inputType="textPassword"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Confirm Password"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp">
+
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Re-enter your password"
+                    android:inputType="textPassword"
+                    android:textColor="#111827"
+                    android:textColorHint="#98A2B3"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvToggleConfirmPassword"
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="👁"
+                    android:textColor="#98A2B3"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Register"
-                android:backgroundTint="#8C2F39"
-                android:textColor="#FFFFFF" />
+                android:layout_height="54dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_button_maroon"
+                android:gravity="center"
+                android:text="Create Student Account"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E5E7EB" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:text="OR"
+                    android:textColor="#98A2B3"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E5E7EB" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvGoToLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Already have an account? Login"
-                android:textColor="#8C2F39"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center_horizontal" />
+                android:id="@+id/btnGoogleRegister"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_google_button"
+                android:gravity="center"
+                android:text="G   Continue with Google"
+                android:textColor="#111827"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>

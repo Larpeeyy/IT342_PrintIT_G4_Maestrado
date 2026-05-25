@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_card_white"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tvDropdownNotificationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notification title"
+        android:textColor="#111827"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDropdownNotificationMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Notification message"
+        android:textColor="#667085"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvDropdownNotificationStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_status_gray"
+        android:gravity="center"
+        android:minWidth="70dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="Unread"
+        android:textColor="#555555"
+        android:textSize="11sp" />
+
+</LinearLayout>
