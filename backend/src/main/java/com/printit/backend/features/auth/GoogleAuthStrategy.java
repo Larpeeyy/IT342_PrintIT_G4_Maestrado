@@ -4,6 +4,9 @@ import com.printit.backend.core.entity.User;
 import com.printit.backend.core.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 public class GoogleAuthStrategy implements AuthStrategy {
 
@@ -15,25 +18,88 @@ public class GoogleAuthStrategy implements AuthStrategy {
 
     @Override
     public User authenticate(AuthRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Account not found. Please register first."));
+        if (request == null || request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Google email is required.");
+        }
 
-        if ("STAFF".equalsIgnoreCase(user.getRole())) {
-            String approvalStatus = user.getApprovalStatus();
+        String email = request.getEmail().trim().toLowerCase();
+        String fullName = request.getFullName() != null && !request.getFullName().trim().isEmpty()
+                ? request.getFullName().trim()
+                : generateNameFromEmail(email);
 
-            if (!"APPROVED".equalsIgnoreCase(approvalStatus)) {
-                if ("PENDING".equalsIgnoreCase(approvalStatus)) {
-                    throw new RuntimeException("Your staff account is still pending admin approval.");
-                }
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
-                if ("REJECTED".equalsIgnoreCase(approvalStatus)) {
-                    throw new RuntimeException("Your staff registration was rejected by the admin.");
-                }
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
 
-                throw new RuntimeException("Your staff account is not approved yet.");
+            if ("STAFF".equalsIgnoreCase(user.getRole())) {
+                throw new RuntimeException("Staff accounts must login manually using email and password.");
+            }
+
+            return user;
+        }
+
+        User newGoogleStudent = new User();
+        newGoogleStudent.setEmail(email);
+        newGoogleStudent.setFullName(fullName);
+        newGoogleStudent.setUsername(generateUniqueUsername(email));
+        newGoogleStudent.setPassword(generateGoogleOnlyPassword());
+        newGoogleStudent.setRole("STUDENT");
+        newGoogleStudent.setStudentId("");
+        newGoogleStudent.setStaffId("");
+        newGoogleStudent.setApprovalStatus("APPROVED");
+        newGoogleStudent.setProfileImageUrl("");
+
+        return userRepository.save(newGoogleStudent);
+    }
+
+    private String generateNameFromEmail(String email) {
+        String namePart = email.split("@")[0]
+                .replace(".", " ")
+                .replace("_", " ")
+                .replace("-", " ")
+                .trim();
+
+        if (namePart.isEmpty()) {
+            return "Google User";
+        }
+
+        String[] words = namePart.split("\\s+");
+        StringBuilder formattedName = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                formattedName
+                        .append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.length() > 1 ? word.substring(1).toLowerCase() : "")
+                        .append(" ");
             }
         }
 
-        return user;
+        return formattedName.toString().trim();
+    }
+
+    private String generateUniqueUsername(String email) {
+        String baseUsername = email.split("@")[0]
+                .replaceAll("[^a-zA-Z0-9._-]", "")
+                .toLowerCase();
+
+        if (baseUsername.isBlank()) {
+            baseUsername = "googleuser";
+        }
+
+        String username = baseUsername;
+        int counter = 1;
+
+        while (userRepository.existsByUsername(username)) {
+            username = baseUsername + counter;
+            counter++;
+        }
+
+        return username;
+    }
+
+    private String generateGoogleOnlyPassword() {
+        return "GOOGLE_AUTH_" + UUID.randomUUID();
     }
 }

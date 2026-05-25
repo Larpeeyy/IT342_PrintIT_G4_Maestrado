@@ -1,14 +1,14 @@
 package com.printit.backend.features.admin.dashboard;
 
+import com.printit.backend.core.entity.Payment;
+import com.printit.backend.core.entity.PrintOrder;
+import com.printit.backend.core.entity.User;
+import com.printit.backend.core.repository.PaymentRepository;
+import com.printit.backend.core.repository.PrintOrderRepository;
+import com.printit.backend.core.repository.UserRepository;
 import com.printit.backend.features.admin.orders.AdminOrderResponse;
 import com.printit.backend.features.admin.payments.AdminPaymentResponse;
 import com.printit.backend.features.admin.users.AdminUserResponse;
-import com.printit.backend.core.entity.User;
-import com.printit.backend.core.entity.Payment;
-import com.printit.backend.core.entity.PrintOrder;
-import com.printit.backend.core.repository.UserRepository;
-import com.printit.backend.core.repository.PaymentRepository;
-import com.printit.backend.core.repository.PrintOrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminDashboardService {
@@ -46,7 +47,7 @@ public class AdminDashboardService {
                 userRepository.findByRoleAndApprovalStatusOrderByIdDesc("STAFF", "PENDING")
                         .stream()
                         .map(this::mapToPendingStaffResponse)
-                        .toList();
+                        .collect(Collectors.toList());
 
         List<AdminDashboardResponse.ChartPointResponse> ordersPerDay =
                 getOrdersPerDayChart();
@@ -69,21 +70,21 @@ public class AdminDashboardService {
         return userRepository.findAll()
                 .stream()
                 .map(this::mapToAdminUserResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<AdminOrderResponse> getAllOrders() {
         return printOrderRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::mapToAdminOrderResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<AdminPaymentResponse> getAllPayments() {
         return paymentRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::mapToAdminPaymentResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void approveStaff(Long userId) {
@@ -141,19 +142,32 @@ public class AdminDashboardService {
                         formatDayLabel(entry.getKey()),
                         BigDecimal.valueOf(entry.getValue())
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private String formatDayLabel(DayOfWeek day) {
-        return switch (day) {
-            case MONDAY -> "Mon";
-            case TUESDAY -> "Tue";
-            case WEDNESDAY -> "Wed";
-            case THURSDAY -> "Thu";
-            case FRIDAY -> "Fri";
-            case SATURDAY -> "Sat";
-            case SUNDAY -> "Sun";
-        };
+        if (day == null) {
+            return "";
+        }
+
+        switch (day) {
+            case MONDAY:
+                return "Mon";
+            case TUESDAY:
+                return "Tue";
+            case WEDNESDAY:
+                return "Wed";
+            case THURSDAY:
+                return "Thu";
+            case FRIDAY:
+                return "Fri";
+            case SATURDAY:
+                return "Sat";
+            case SUNDAY:
+                return "Sun";
+            default:
+                return "";
+        }
     }
 
     private List<AdminDashboardResponse.ChartPointResponse> getRevenuePerMonthChart() {
@@ -201,7 +215,7 @@ public class AdminDashboardService {
                         entry.getKey().format(labelFormat),
                         entry.getValue()
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private PendingStaffResponse mapToPendingStaffResponse(User user) {
@@ -245,6 +259,10 @@ public class AdminDashboardService {
 
         if (payment.getOrder() != null && payment.getOrder().getTotalAmount() != null) {
             correctAmount = payment.getOrder().getTotalAmount();
+        }
+
+        if (correctAmount == null) {
+            correctAmount = BigDecimal.ZERO;
         }
 
         return new AdminPaymentResponse(
