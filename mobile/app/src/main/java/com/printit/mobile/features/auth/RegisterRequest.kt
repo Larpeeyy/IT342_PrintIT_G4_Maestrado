@@ -1,4 +1,4 @@
-package com.printit.mobile.model
+package com.printit.mobile.features.auth
 
 data class RegisterRequest(
     val fullName: String,

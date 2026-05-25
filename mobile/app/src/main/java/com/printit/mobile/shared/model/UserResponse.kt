@@ -1,11 +1,14 @@
-package com.printit.mobile.model
+package com.printit.mobile.shared.model
 
 data class UserResponse(
     val id: Long?,
     val email: String?,
     val fullName: String?,
+    val username: String?,
     val password: String?,
     val role: String?,
     val studentId: String?,
-    val staffId: String?
+    val staffId: String?,
+    val profileImageUrl: String?,
+    val approvalStatus: String?
 )
